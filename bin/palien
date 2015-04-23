@@ -28,9 +28,17 @@ Alien distributions as well.
 
 Print out the compiler flags for the compiler
 
+=head2 --dll
+
+Print out the DLLs, one per line
+
 =head2 --libs
 
 Print out the library flags for the linker
+
+=head2 --modversion
+
+Print out the package version.
 
 =head2 --help | -h
 

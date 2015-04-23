@@ -26,15 +26,20 @@ sub main
   
   my $cflags;
   my $libs;
+  my $list;
+  my $dll;
+  my $modversion;
   my $status = 0;
   
   GetOptions(
     "cflags"     =>   \$cflags,
     "libs"       =>   \$libs,
+    "dll"        =>   \$dll,
+    "modversion" =>   \$modversion,
     "help|h"     =>   sub { pod2usage({ -verbose => 2}) },
     "version"    =>   sub { print "App::palien version " . ($App::palien::VERSION || 'dev') . "\n"; exit 1; },
   ) || pod2usage(1);
-  
+
   foreach my $module (@ARGV)
   {
     my $alien;
@@ -63,6 +68,18 @@ sub main
     if($libs)
     {
       print $alien->libs, "\n";
+    }
+    
+    if($modversion)
+    {
+      my $version = $alien->config("version");
+      chomp $version;
+      print "$version\n";
+    }
+    
+    if($dll)
+    {
+      print $_, "\n" for $alien->dynamic_libs;
     }
   }
   
