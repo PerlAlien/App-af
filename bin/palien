@@ -1,0 +1,46 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use App::palien;
+
+# ABSTRACT: Command line interface to Alien::Base
+# PODNAME: palien
+# VERSION
+
+=head1 SYNOPSIS
+
+ % palien --cflags libfoo
+ % palien --cflags Alien::Foo
+ % palien --libs libfoo
+ % palien --libs Alien::Foo
+
+=head1 DESCRIPTION
+
+This program provides a command line interface to the data stored in
+Alien modules.  It is geared primarily for use with Alien::Base based
+distributions, but it will attempt to work with non-Alien::Base based
+Alien distributions as well.
+
+=head1 OPTIONS
+
+=head2 --cflags
+
+Print out the compiler flags for the compiler
+
+=head2 --libs
+
+Print out the library flags for the linker
+
+=head2 --help | -h
+
+Print out the usage for this command
+
+=head2 --version
+
+Print out the version of this command
+
+=cut
+
+exit App::palien->main(@ARGV);
+
