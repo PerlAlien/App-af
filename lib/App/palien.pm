@@ -78,7 +78,6 @@ sub main
     {
       my $dir = dir( $inc, 'Alien' );
       next unless -d $dir;
-      $DB::single = 1;
       foreach my $pm (grep /\.pm$/, map { $_->basename } grep { ! $_->is_dir } $dir->children)
       {
         $pm =~ s/\.pm$//;
