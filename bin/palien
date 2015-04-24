@@ -28,6 +28,10 @@ Alien distributions as well.
 
 Print out the compiler flags for the compiler
 
+=head2 --detail | -d
+
+Print out details for each package specified
+
 =head2 --dll
 
 Print out the DLLs, one per line
