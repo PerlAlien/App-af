@@ -37,6 +37,13 @@ sub _modversion ($)
   $ver;
 }
 
+sub _bin_dir
+{
+  my($dir_sep, $alien) = @_;
+
+  join( $dir_sep, $alien->bin_dir );
+}
+
 sub _cflags ($)
 {
   my($alien) = @_;
@@ -53,6 +60,8 @@ sub main
 {
   local(undef, @ARGV) = @_;
   
+  my $bin_dir;
+  my $dir_sep = ' ';
   my $cflags;
   my $libs;
   my $list;
@@ -62,6 +71,8 @@ sub main
   my $status = 0;
   
   GetOptions(
+    "bin_dir"    =>   \$bin_dir,
+    "dir_sep"   =>   \$dir_sep,
     "cflags"     =>   \$cflags,
     "libs"       =>   \$libs,
     "dll"        =>   \$dll,
@@ -132,6 +143,11 @@ sub main
       printf "dist:       %s\n", $alien->dist_dir if eval { $alien->dist_dir };
       printf "cflags:     %s\n", _cflags $alien;
       printf "libs:       %s\n", _libs $alien;
+    }
+    
+    if( defined $bin_dir)
+    {
+      print _bin_dir ( $dir_sep, $alien) , "\n";
     }
     
     if($cflags)

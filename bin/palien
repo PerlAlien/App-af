@@ -24,6 +24,14 @@ Alien distributions as well.
 
 =head1 OPTIONS
 
+=head2 --bin_dir
+
+Print out a list of directories with executables in them.
+
+=head2 --dir_sep I<string>
+
+Lists of directories are output separated by I<string>, which defaults to C< >.
+
 =head2 --cflags
 
 Print out the compiler flags for the compiler
