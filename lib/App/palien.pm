@@ -71,8 +71,8 @@ sub main
   my $status = 0;
   
   GetOptions(
-    "bin_dir"    =>   \$bin_dir,
-    "dir_sep"   =>   \$dir_sep,
+    "bin-dir"    =>   \$bin_dir,
+    "dir-sep"    =>   \$dir_sep,
     "cflags"     =>   \$cflags,
     "libs"       =>   \$libs,
     "dll"        =>   \$dll,

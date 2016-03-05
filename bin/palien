@@ -24,11 +24,11 @@ Alien distributions as well.
 
 =head1 OPTIONS
 
-=head2 --bin_dir
+=head2 --bin-dir
 
 Print out a list of directories with executables in them.
 
-=head2 --dir_sep I<string>
+=head2 --dir-sep I<string>
 
 Lists of directories are output separated by I<string>, which defaults to C< >.
 
