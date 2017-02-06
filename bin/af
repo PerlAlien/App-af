@@ -60,12 +60,12 @@ option, or the current working directory if not specified.
 
 =head4 -f | --file
 
-The L<alienfile>.  If neither this option, nor C<-c> is specifid, then 
+The L<alienfile>.  If neither this option, nor C<-c> is specified, then 
 C<alienfile> in the current directory will be assumed.
 
 =head4 -c | --class
 
-Get the L<alienfile> from the already installe Alien module.
+Get the L<alienfile> from the already installed Alien module.
 
 =head4 -l | --local
 

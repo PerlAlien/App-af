@@ -44,12 +44,12 @@ option, or the current working directory if not specified.
 
 #### -f | --file
 
-The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specifid, then 
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
 `alienfile` in the current directory will be assumed.
 
 #### -c | --class
 
-Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installe Alien module.
+Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installed Alien module.
 
 #### -l | --local
 
