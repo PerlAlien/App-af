@@ -11,7 +11,13 @@ use App::af;
 
 =head1 SYNOPSIS
 
- af install Alien::foo
+ af download   --help
+ af install    --help
+ af test       --help
+ af requires   --help
+ af missing    --help
+ af prop       --help
+ af clean      --help
 
 =head1 DESCRIPTION
 
@@ -102,7 +108,7 @@ if not specified.
 ## for "-c" mode, --prefix is the distdir
 ## "--stage" is ~/.alienbuild/af/tmp/XXXXXX by default
 
-package App::test::install{
+package App::af::install {
   use Moose;
   with 'App::af';
   sub main {}

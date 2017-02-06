@@ -4,7 +4,13 @@ Command line tool for alienfile
 
 # SYNOPSIS
 
-    af install Alien::foo
+    af download   --help
+    af install    --help
+    af test       --help
+    af requires   --help
+    af missing    --help
+    af prop       --help
+    af clean      --help
 
 # DESCRIPTION
 
