@@ -1,0 +1,173 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use 5.014;
+use App::af;
+
+# PODNAME: af
+# ABSTRACT: Command line tool for alienfile
+# VERSION
+
+=head1 SYNOPSIS
+
+ af install Alien::foo
+
+=head1 DESCRIPTION
+
+The C<af> command is a command line interface to L<alienfile> and
+L<Alien::Build>.
+
+=head3 options
+
+These options are available for all subcommands.
+
+=head4 --help
+
+Print the help for either C<af> as a whole, or the specific subcommand.
+
+=head4 --version
+
+Print the version of C<af> and exit.
+
+=head1 SUBCOMMANDS
+
+=cut
+
+my $app = App::af->compute_class->new(@ARGV);
+exit $app->main;
+
+package App::af::download {
+  use Moose;
+  with 'App::af';
+
+=head2 download
+
+Usage:
+
+ af download
+   [
+     ( -f | --file )  alienfile | 
+     ( -c | --class ) class
+   ]
+   [ ( -l | --local ) directory
+
+Download the external resource using the usual L<alienfile> logic.  File
+will be deposited in the directory indicated by the C<--local> (or C<-l>)
+option, or the current working directory if not specified.
+
+=head3 options
+
+=head4 -f | --file
+
+The L<alienfile>.  If neither this option, nor C<-c> is specifid, then 
+C<alienfile> in the current directory will be assumed.
+
+=head4 -c | --class
+
+Get the L<alienfile> from the already installe Alien module.
+
+=head4 -l | --local
+
+The location to store the downloaded resource.  The current directory
+if not specified.
+
+=cut
+
+  __PACKAGE__->meta->make_immutable;
+}
+
+# options that always work:
+# --help
+# --version
+
+# download
+#   -f | --file alienfile
+#   -c | --class (Alien::)?foo
+#   -l | --local directory
+
+## Downloads the tarball, directory to
+## local directory
+
+package App::af::download {
+  use Moose;
+  with 'App::af';
+}
+
+# install
+#   --prefix
+#   --stage
+#   -f | --file alienfile
+#   -c | --class (Alien::)?foo
+
+## Installs or reinstalls the Alien
+## for "-c" mode, --prefix is the distdir
+## "--stage" is ~/.alienbuild/af/tmp/XXXXXX by default
+
+package App::test::download {
+  use Moose;
+  with 'App::af';
+}
+
+# test
+#   --prefix
+#   --stage
+#   -f | --file alienfile
+#   -c | --class (Alien::)?foo
+#   --before
+#   --after    # default
+#   -p | --phase ( probe | download | extract | patch | build | gather )
+
+## --prefix is ~/.alienbuild/af/tmp/XXXXX by default
+## --stage  is ~/.alienbuild/af/tmp/XXXXX by default
+
+package App::af::requires {
+  use Moose;
+  with 'App::af';
+}
+
+# requires
+#   -f | --file alienfile
+#   -c | --class (Alien::)?foo
+#   -p | --phase ( configure | any | share | system )
+
+## prints in YAML format either all requirements, or the reqs
+## for the particular phase
+
+package App::af::missing {
+  use Moose;
+  with 'App::af';
+}
+
+# missing
+#   -f | --file alienfile
+#   -c | --class (Alien::)?foo
+#   -p | --phase ( configure | any | share | system )
+
+## prints list of modules not apparently already installed.
+## Without phase, will execute probe to determine which phase
+## to do.
+
+package App::af::prop {
+  use Moose;
+  with 'App::af';
+}
+
+# prop
+#   -c | --class (Alien::)?foo
+#   --static
+#   --cflags
+#   --libs
+#   --modversion
+#   --bin-dir
+
+## prints the runtime properties of the already installed Alien
+
+package App::af::clean {
+  use Moose;
+  with 'App::af';
+}
+
+# clean
+
+## removes all temp files
