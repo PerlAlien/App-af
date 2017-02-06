@@ -21,8 +21,10 @@ package App::af {
   {
     my($class, @args) = @_;
     
+    my($subcommand) = $class =~ /App::af::(.*)/;
+    
     my @options = (
-      'help'    => sub { pod2usage({ -verbose => 1 }) },
+      'help'    => sub { pod2usage({ -verbose => 99, -sections => "SUBCOMMANDS/$subcommand", -exitval => 0 }) },
       'version' => sub {
         say "App::af version ", ($App::af::VERSION // 'dev');
         exit;
@@ -30,7 +32,7 @@ package App::af {
     );
     
     GetOptionsFromArray(\@args, @options)
-      || pod2usage({ -exitval => 1 });
+      || pod2usage({ -exitval => 1, -verbose => 99, -sections => "SUBCOMMANDS/$subcommand/Usage" });
     
     { args => \@args },
   }

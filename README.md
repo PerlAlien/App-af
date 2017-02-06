@@ -27,7 +27,7 @@ Print the version of `af` and exit.
 
 ## download
 
-Usage:
+### Usage
 
     af download
       [
@@ -35,6 +35,8 @@ Usage:
         ( -c | --class ) class
       ]
       [ ( -l | --local ) directory
+
+### description
 
 Download the external resource using the usual [alienfile](https://metacpan.org/pod/alienfile) logic.  File
 will be deposited in the directory indicated by the `--local` (or `-l`)
