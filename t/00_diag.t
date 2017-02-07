@@ -11,14 +11,24 @@ my $post_diag;
 
 $modules{$_} = $_ for qw(
   Alien::Build
+  Capture::Tiny
+  Exporter
   ExtUtils::MakeMaker
+  File::Copy::Recursive
+  File::Temp
+  File::chdir
   Getopt::Long
+  Module::Load
   Moose
   Moose::Role
+  MooseX::Types::Path::Tiny
+  Path::Tiny
   Pod::Usage
   Test2::Suite
+  Test::Exit
   Test::More
   Test::Script
+  lib
   namespace::autoclean
 );
 

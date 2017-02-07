@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use 5.014;
 use App::af;
+use File::chdir;
 
 # PODNAME: af
 # ABSTRACT: Command line tool for alienfile
@@ -42,7 +43,12 @@ Print the version of C<af> and exit.
 
 package App::af::download {
   use Moose;
+  use namespace::autoclean;
+  use MooseX::Types::Path::Tiny qw( AbsPath );
+  use Path::Tiny qw( path );
+
   with 'App::af';
+  with 'App::af::role::alienfile';
 
 =head2 download
 
@@ -53,7 +59,7 @@ package App::af::download {
      ( -f | --file )  alienfile | 
      ( -c | --class ) class
    ]
-   [ ( -l | --local ) directory
+   [ ( -l | --local ) directory ]
 
 =head3 description
 
@@ -79,24 +85,67 @@ if not specified.
 
 =cut
 
+  has local => (
+    is       => 'ro',
+    isa      => AbsPath,
+    traits   => ['App::af::opt'],
+    short    => 'l',
+    coerce   => 1,
+    opt_type => 's',
+    default  => '.',
+  );
+
   sub main
   {
+    my($self) = @_;
+    say $self->local;
+    
+    unless(-d $self->local)
+    {
+      say STDERR "no such directory: @{[ $self->local ]}";
+      return 2;
+    }
+
+    local $ENV{ALIEN_INSTALL_TYPE} = 'share';    
+    my $build = $self->build;
+    $build->load_requires('configure');
+    $build->load_requires('share');
+    eval { $build->download };
+    warn $@ if $@;
+
+    unless(defined $build->install_prop->{download} &&
+           length $build->install_prop->{download})
+    {
+      say STDERR "Recipe did not seem to download a file or directory";
+      return 2;
+    }
+    
+    my $download = path($build->install_prop->{download});
+    
+    if(-f $download)
+    {
+      my $to = $self->local->child($download->basename);
+      $download->copy($to) || die "unable to copy $download => $to $!";
+      say "Wrote archive to $to";
+    }
+    elsif(-d $download)
+    {
+      require File::Copy::Recursive;
+      my $to = $self->local->child($download->basename);
+      File::Copy::Recursive::dircopy("$download", "$to") || die "unable to copy $download => $to $!";
+      say "Wrote directory to $to";
+    }
+    else
+    {
+      say STDERR "Recipe did not seem to download a file or directory";
+      return 2;
+    }
+    
+    0;
   }
 
   __PACKAGE__->meta->make_immutable;
 }
-
-# options that always work:
-# --help
-# --version
-
-# download
-#   -f | --file alienfile
-#   -c | --class (Alien::)?foo
-#   -l | --local directory
-
-## Downloads the tarball, directory to
-## local directory
 
 # install
 #   --prefix
@@ -193,5 +242,10 @@ package App::af::clean {
   __PACKAGE__->meta->make_immutable;
 }
 
-my $app = App::af->compute_class->new(@ARGV);
-exit($app->main // 0);
+# for testing, allow us to do this file
+# without running.
+unless(caller)
+{
+  my $app = App::af->compute_class->new(@ARGV);
+  exit($app->main // 0);
+}

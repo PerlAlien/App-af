@@ -40,7 +40,7 @@ Print the version of `af` and exit.
         ( -f | --file )  alienfile | 
         ( -c | --class ) class
       ]
-      [ ( -l | --local ) directory
+      [ ( -l | --local ) directory ]
 
 ### description
 
