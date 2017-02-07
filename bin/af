@@ -226,19 +226,99 @@ package App::af::missing {
 
 package App::af::prop {
   use Moose;
+  use namespace::autoclean;
+  use Module::Load qw( load );
+  
   with 'App::af';
-  sub main {}
-  __PACKAGE__->meta->make_immutable;
-}
 
-# clean
+  has class => (
+    is       => 'ro',
+    isa      => 'Str',
+    traits   => ['App::af::opt'],
+    short    => 'c',
+    opt_type => 's',
+  );
+  
+  has $_ => (
+    is       => 'ro',
+    isa      => 'Int',
+    traits   => ['App::af::opt'],
+  ) for qw( static cflags libs modversion bin_dir );
 
-## removes all temp files
+  sub main {
+    my($self) = @_;
+    
+    unless($self->class)
+    {
+      say STDERR "You must specify a class.\n";
+      return 2;
+    }
+    
+    my $class = $self->class =~ /::/ ? $self->class : 'Alien::' . $self->class;
 
-package App::af::clean {
-  use Moose;
-  with 'App::af';
-  sub main {}
+    load $class;    
+    unless($class->can('runtime_prop'))
+    {
+      say STDERR "$class was not installed with Alien::Build";
+      return 2;
+    }
+    
+    my $prop = $class->runtime_prop;
+    
+    unless($prop)
+    {
+      say STDERR "$class was not installed with Alien::Build";
+      return 2;
+    }
+    
+    my $found = 0;
+    
+    if($self->cflags)
+    {
+      if($self->static)
+      {
+        say $class->cflags_static;
+      }
+      else
+      {
+        say $class->cflags;
+      }
+      $found = 1;
+    }
+    
+    if($self->libs)
+    {
+      if($self->static)
+      {
+        say $class->libs_static;
+      }
+      else
+      {
+        say $class->libs;
+      }
+      $found = 1;
+    }
+    
+    if($self->bin_dir)
+    {
+      say $_ for $class->bin_dir;
+      $found = 1;
+    }
+    
+    if($self->modversion)
+    {
+      say $class->version // 'undef';
+      $found = 1;
+    }
+    
+    unless($found)
+    {
+      require YAML;
+      print YAML::Dump($prop);
+    }
+    
+    0;
+  }
   __PACKAGE__->meta->make_immutable;
 }
 
