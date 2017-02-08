@@ -46,6 +46,8 @@ sub run
   
   note "[command]\naf $subcommand @args";
   
+  $out = '';
+  $err = '';
   ($out, $err, $ret) = capture {
     $class->new(@args)->main;
   };

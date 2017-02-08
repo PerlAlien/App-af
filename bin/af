@@ -319,8 +319,72 @@ Override the install type.  May be either C<share> or C<system>.
 
 package App::af::requires {
   use Moose;
+  use namespace::autoclean;
+  use YAML qw( Dump );
+
+=head2 requires
+
+=head3 Usage
+
+ af requires
+   [
+     ( -f | --file )  alienfile | 
+     ( -c | --class ) class
+   ]
+   [ ( -p | --phase ) ( configure | any | share | system ) ]
+
+=head3 description
+
+Print the requirements for the given phase in L<YAML> format.  If the phase
+is not provided, then requirements for all phases will be printed separately
+in L<YAML> format.
+
+=head3 options
+
+=head4 -f | --file
+
+The L<alienfile>.  If neither this option, nor C<-c> is specified, then 
+C<alienfile> in the current directory will be assumed.
+
+=head4 -c | --class
+
+Get the L<alienfile> from the already installed Alien module.    You may
+omit the C<Alien::> prefix, so for example L<Alien::curl> may be specified
+as simply C<curl>.
+
+=head4 -p | --phase
+
+The phase of the requirement.  Please refer to the L<Alien::Build> documentation
+for the meaning of the various phases.
+
+=cut
+
   with 'App::af';
-  sub main {}
+  with 'App::af::role::alienfile';
+  with 'App::af::role::phase';
+  
+  sub main
+  {
+    my($self) = @_;
+    
+    $self->check_phase;
+    
+    my $build = $self->build;
+    
+    if($self->phase eq 'all')
+    {
+      print Dump({
+        map { $_ => $build->requires($_) } qw( configure any share system )
+      });
+    }
+    else
+    {
+      print Dump($build->requires($self->phase));
+    }
+    
+    0;
+  }
+  
   __PACKAGE__->meta->make_immutable;
 }
 
@@ -530,14 +594,14 @@ alienized package.
   {
     my($self) = @_;
     
+    my $table;
+    $table = Text::Table->new('name', 'alien version', 'package version')
+      if $self->long;
+    
     foreach my $inc (map { path($_)->absolute } @INC)
     {
       my $dist_root = $inc->child('auto/share/dist');
       next unless -d $dist_root;
-      
-      my $table;
-      $table = Text::Table->new('name', 'alien version', 'package version')
-        if $self->long;
       
       foreach my $dist_dir ($dist_root->children)
       {
@@ -564,9 +628,11 @@ alienized package.
           $table->add($class, $perl_version, $pkg_version);
         }
       }
-      
-      print $table if defined $table;
+
     }
+    
+    print $table if defined $table;
+    0;
   }
   
   __PACKAGE__->meta->make_immutable;
@@ -576,6 +642,12 @@ alienized package.
 # without running.
 unless(caller)
 {
-  my $app = App::af->compute_class->new(@ARGV);
+  my $class = App::af->compute_class;
+  unless(eval { $class->does('App::af') })
+  {
+    say STDERR "unknown subcommand";
+    exit 2;
+  }
+  my $app = $class->new(@ARGV);
   exit($app->main // 0);
 }

@@ -173,6 +173,33 @@ package App::af::role::alienfile {
   }  
 }
 
+package App::af::role::phase {
+
+  use Moose::Role;
+  use namespace::autoclean;
+  
+  has phase => (
+    is       => 'ro',
+    isa      => 'Str',
+    default  => 'all',
+    traits   => ['App::af::opt'],
+    opt_type => 's',
+    short    => 'p',
+  );
+  
+  sub check_phase
+  {
+    my($self) = @_;
+    
+    if($self->phase !~ /^(configure|any|all|share|system)$/)
+    {
+      say STDERR "unknown phase: @{[ $self->phase ]}";
+      exit 2;
+    }
+  }
+  
+}
+
 package App::af::opt {
 
   use Moose::Role;

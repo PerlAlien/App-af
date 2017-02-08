@@ -9,7 +9,7 @@ Command line tool for alienfile
     af requires   --help
     af missing    --help
     af prop       --help
-    af list      --help
+    af list       --help
 
 # DESCRIPTION
 
@@ -108,6 +108,41 @@ but optional when using the `-c` option.
 #### --type
 
 Override the install type.  May be either `share` or `system`.
+
+## requires
+
+### Usage
+
+    af requires
+      [
+        ( -f | --file )  alienfile | 
+        ( -c | --class ) class
+      ]
+      [ ( -p | --phase ) ( configure | any | share | system ) ]
+
+### description
+
+Print the requirements for the given phase in [YAML](https://metacpan.org/pod/YAML) format.  If the phase
+is not provided, then requirements for all phases will be printed separately
+in [YAML](https://metacpan.org/pod/YAML) format.
+
+### options
+
+#### -f | --file
+
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+`alienfile` in the current directory will be assumed.
+
+#### -c | --class
+
+Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installed Alien module.    You may
+omit the `Alien::` prefix, so for example [Alien::curl](https://metacpan.org/pod/Alien::curl) may be specified
+as simply `curl`.
+
+#### -p | --phase
+
+The phase of the requirement.  Please refer to the [Alien::Build](https://metacpan.org/pod/Alien::Build) documentation
+for the meaning of the various phases.
 
 ## prop
 
