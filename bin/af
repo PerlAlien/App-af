@@ -14,7 +14,6 @@ use File::chdir;
 
  af download   --help
  af install    --help
- af test       --help
  af requires   --help
  af missing    --help
  af prop       --help
@@ -76,7 +75,9 @@ C<alienfile> in the current directory will be assumed.
 
 =head4 -c | --class
 
-Get the L<alienfile> from the already installed Alien module.
+Get the L<alienfile> from the already installed Alien module.    You may
+omit the C<Alien::> prefix, so for example L<Alien::curl> may be specified
+as simply C<curl>.  
 
 =head4 -l | --local
 
@@ -158,27 +159,153 @@ if not specified.
 
 package App::af::install {
   use Moose;
+  use namespace::autoclean;
+  use File::Temp qw( tempdir );
+  use MooseX::Types::Path::Tiny qw( AbsPath );
+  
   with 'App::af';
-  sub main {}
-  __PACKAGE__->meta->make_immutable;
-}
+  with 'App::af::role::alienfile';
+  
+=head2 install
 
-# test
-#   --prefix
-#   --stage
-#   -f | --file alienfile
-#   -c | --class (Alien::)?foo
-#   --before
-#   --after    # default
-#   -p | --phase ( probe | download | extract | patch | build | gather )
+=head3 Usage
 
-## --prefix is ~/.alienbuild/af/tmp/XXXXX by default
-## --stage  is ~/.alienbuild/af/tmp/XXXXX by default
+ af install
+   [
+     ( -f | --file )  alienfile | 
+     ( -c | --class ) class
+   ]
+   [ --stage directory ] [ --prefix directory ] [ --type ( share | system ) ]
 
-package App::af::test {
-  use Moose;
-  with 'App::af';
-  sub main {}
+=head3 description
+
+Install or reinstall using the given L<alienfile> or already installed
+L<Alien>.
+
+=head3 options
+
+=head4 -f | --file
+
+The L<alienfile>.  If neither this option, nor C<-c> is specified, then 
+C<alienfile> in the current directory will be assumed.
+
+=head4 -c | --class
+
+Get the L<alienfile> from the already installed Alien module.    You may
+omit the C<Alien::> prefix, so for example L<Alien::curl> may be specified
+as simply C<curl>.  If you do not specify the C<--prefix> option, the
+package will replace the already installed one.
+
+=head4 --stage
+
+The stage directory.  By default this is a temporary directory that will
+automatically be removed.
+
+=head4 --prefix
+
+The final install location to use.  Required when using the C<-f> option,
+but optional when using the C<-c> option.
+
+=head4 --type
+
+Override the install type.  May be either C<share> or C<system>.
+
+=cut
+  
+  has stage => (
+    is       => 'ro',
+    isa      => AbsPath,
+    traits   => ['App::af::opt'],
+    coerce   => 1,
+    lazy     => 1,
+    opt_type => 's',
+    default  => sub {
+      tempdir( CLEANUP => 1);
+    },
+  );
+  
+  has prefix => (
+    is     => 'rw',
+    isa    => AbsPath,
+    traits => ['App::af::opt'],
+    opt_type => 's',
+    coerce => 1,
+  );
+  
+  has type => (
+    is       => 'ro',
+    isa      => 'Str',
+    traits   => ['App::af::opt'],
+    opt_type => 's',
+  );
+  
+  sub main
+  {
+    my($self) = @_;
+    
+    local $ENV{ALIEN_INSTALL_TYPE} = $ENV{ALIEN_INSTALL_TYPE};
+    
+    if(defined $self->type)
+    {
+      unless($self->type =~ /^(share|system)$/)
+      {
+        say STDERR "unknown install type: @{[ $self->type ]}";
+        return 2;
+      }
+      $ENV{ALIEN_INSTALL_TYPE} = $self->type;
+    }
+    
+    if(-d $self->stage && $self->stage->children)
+    {
+      say "stage directory is not empty";
+      exit 2;
+    }
+    
+    my($build, $prefix) = $self->build;
+    $self->prefix($prefix) if defined($prefix) && ! $self->prefix;
+    
+    if(-d $self->prefix->child('_alien'))
+    {
+      my $test = $self->prefix->child('_alien/test');
+      eval { $test->touch };
+      if($@)
+      {
+        say STDERR "prefix is not writable.  You may need to use su or sudo";
+        return 2;
+      }
+      $test->remove;
+    }
+    
+    unless(defined $self->prefix)
+    {
+      say STDERR "You must specify a prefix with --prefix";
+      return 2;
+    }
+    
+    $build->set_stage($self->stage->stringify);
+    $build->set_prefix($self->prefix->stringify);
+    $build->load_requires('configure');
+    $build->load_requires($build->install_type);
+    $build->download;
+    $build->build;
+    
+    require File::Copy::Recursive;
+    
+    if(-d $self->prefix)
+    {
+      # this is slightly dangerous.
+      foreach my $child ($self->prefix->children)
+      {
+        say "rm -rf $child";
+        $_->remove_tree({ safe => 0 }) for $self->prefix->children;
+      }
+    }
+    
+    File::Copy::Recursive::dircopy($self->stage, $self->prefix) || die "unable to copy @{[ $self->stage ]} => @{[ $self->prefix ]} $!";
+    say "copied staged install into @{[ $self->prefix ]}";
+    
+    0;
+  }
   __PACKAGE__->meta->make_immutable;
 }
 

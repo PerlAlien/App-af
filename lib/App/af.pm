@@ -131,13 +131,22 @@ package App::af::role::alienfile {
     
     my $alienfile;
     
+    my %args;
+    my $prefix;
+    
+    $args{root} = tempdir( CLEANUP => 1);
+    
     if($self->class)
     {
       my $class = $self->class =~ /::/ ? $self->class : "Alien::" . $self->class;
       load $class;
       if($class->can('runtime_prop') && $class->runtime_prop)
       {
-        $alienfile = path($class->dist_dir)->child('_alien/alienfile');
+        my $dist = path($class->dist_dir);
+        $alienfile = $dist->child('_alien/alienfile');
+        my $patch = $dist->child('_alien/patch');
+        $args{patch} = $patch->stringify if -d $patch;
+        $prefix = $dist->stringify;
       }
       else
       {
@@ -157,7 +166,9 @@ package App::af::role::alienfile {
     }
   
     require Alien::Build;
-    Alien::Build->load("$alienfile", root => tempdir( CLEANUP => 1));
+    my $build = Alien::Build->load("$alienfile", %args);
+    
+    wantarray ? ($build, $prefix) : $build;
 
   }  
 }

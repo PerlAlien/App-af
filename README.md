@@ -6,7 +6,6 @@ Command line tool for alienfile
 
     af download   --help
     af install    --help
-    af test       --help
     af requires   --help
     af missing    --help
     af prop       --help
@@ -57,12 +56,58 @@ The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, no
 
 #### -c | --class
 
-Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installed Alien module.
+Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installed Alien module.    You may
+omit the `Alien::` prefix, so for example [Alien::curl](https://metacpan.org/pod/Alien::curl) may be specified
+as simply `curl`.  
 
 #### -l | --local
 
 The location to store the downloaded resource.  The current directory
 if not specified.
+
+## install
+
+### Usage
+
+    af install
+      [
+        ( -f | --file )  alienfile | 
+        ( -c | --class ) class
+      ]
+      [ --stage directory ] [ --prefix directory ] [ --type ( share | system ) ]
+
+### description
+
+Install or reinstall using the given [alienfile](https://metacpan.org/pod/alienfile) or already installed
+[Alien](https://metacpan.org/pod/Alien).
+
+### options
+
+#### -f | --file
+
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+`alienfile` in the current directory will be assumed.
+
+#### -c | --class
+
+Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installed Alien module.    You may
+omit the `Alien::` prefix, so for example [Alien::curl](https://metacpan.org/pod/Alien::curl) may be specified
+as simply `curl`.  If you do not specify the `--prefix` option, the
+package will replace the already installed one.
+
+#### --stage
+
+The stage directory.  By default this is a temporary directory that will
+automatically be removed.
+
+#### --prefix
+
+The final install location to use.  Required when using the `-f` option,
+but optional when using the `-c` option.
+
+#### --type
+
+Override the install type.  May be either `share` or `system`.
 
 ## prop
 
