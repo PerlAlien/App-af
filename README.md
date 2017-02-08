@@ -113,6 +113,10 @@ Override the install type.  May be either `share` or `system`.
 
 Do not install into the final location.
 
+#### --root
+
+Build in root
+
 ## requires
 
 ### Usage

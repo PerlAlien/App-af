@@ -127,14 +127,13 @@ package App::af::role::alienfile {
   
   sub build
   {
-    my($self) = @_;
+    my($self, %args) = @_;
     
     my $alienfile;
     
-    my %args;
     my $prefix;
     
-    $args{root} = tempdir( CLEANUP => 1);
+    $args{root} ||= tempdir( CLEANUP => 1);
     
     if($self->class)
     {

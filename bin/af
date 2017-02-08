@@ -205,6 +205,10 @@ Override the install type.  May be either C<share> or C<system>.
 
 Do not install into the final location.
 
+=head4 --root
+
+Build in root
+
 =cut
   
   has stage => (
@@ -240,6 +244,18 @@ Do not install into the final location.
     traits => ['App::af::opt'],
   );
   
+  has root => (
+    is       => 'ro',
+    isa      => AbsPath,
+    traits   => ['App::af::opt'],
+    opt_type => 's',
+    coerce   => 1,
+    lazy     => 1,
+    default  => sub {
+      tempdir( CLEANUP => 1);
+    },
+  );
+  
   sub main
   {
     my($self) = @_;
@@ -262,7 +278,7 @@ Do not install into the final location.
       exit 2;
     }
     
-    my($build, $prefix) = $self->build;
+    my($build, $prefix) = $self->build( root => $self->root->stringify );
     $self->prefix($prefix) if defined($prefix) && ! $self->prefix;
     
     if($self->dry_run && ! defined $self->prefix)
