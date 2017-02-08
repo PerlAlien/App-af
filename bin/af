@@ -18,7 +18,7 @@ use File::chdir;
  af requires   --help
  af missing    --help
  af prop       --help
- af clean      --help
+ af list      --help
 
 =head1 DESCRIPTION
 
@@ -360,6 +360,88 @@ Print the list of directories bundled with a C<share> install.
     
     0;
   }
+  __PACKAGE__->meta->make_immutable;
+}
+
+package App::af::list {
+  use Moose;
+  use namespace::autoclean;
+  use Path::Tiny qw( path );
+  use Module::Load qw( load );
+  use Text::Table;
+  
+=head2 list
+
+=head3 Usage
+
+ af list [ -l | --long ]
+
+=head3 prop
+
+Print list of L<Alien> modules already installed that used L<Alien::Build>
+as their installer.
+
+=head3 options
+
+=head4 -l | --long
+
+Also print the version number of the L<Alien> module, and the version of the
+alienized package.
+
+=cut
+  
+  with 'App::af';
+
+  has long => (
+    is       => 'ro',
+    isa      => 'Int',
+    traits   => ['App::af::opt'],
+    short    => 'l',
+  );
+  
+  sub main
+  {
+    my($self) = @_;
+    
+    foreach my $inc (map { path($_)->absolute } @INC)
+    {
+      my $dist_root = $inc->child('auto/share/dist');
+      next unless -d $dist_root;
+      
+      my $table;
+      $table = Text::Table->new('name', 'alien version', 'package version')
+        if $self->long;
+      
+      foreach my $dist_dir ($dist_root->children)
+      {
+        next unless -f $dist_dir->child('_alien/alien.json');
+        my $dist = $dist_dir->basename;
+        my $class = $dist;
+        $class =~ s/-/::/g;
+        
+        unless($table)
+        {
+          say $class;
+          next;
+        }
+        
+        eval { load $class };
+        if($@)
+        {
+          $table->add($class, '---', '---');
+        }
+        else
+        {
+          my $perl_version = eval { $class->VERSION } // '---';
+          my $pkg_version   = eval { $class->version } // '---';
+          $table->add($class, $perl_version, $pkg_version);
+        }
+      }
+      
+      print $table if defined $table;
+    }
+  }
+  
   __PACKAGE__->meta->make_immutable;
 }
 

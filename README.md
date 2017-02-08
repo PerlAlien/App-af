@@ -10,7 +10,7 @@ Command line tool for alienfile
     af requires   --help
     af missing    --help
     af prop       --help
-    af clean      --help
+    af list      --help
 
 # DESCRIPTION
 
@@ -103,6 +103,24 @@ the [Alien](https://metacpan.org/pod/Alien) module itself.
 #### --bin-dir
 
 Print the list of directories bundled with a `share` install.
+
+## list
+
+### Usage
+
+    af list [ -l | --long ]
+
+### prop
+
+Print list of [Alien](https://metacpan.org/pod/Alien) modules already installed that used [Alien::Build](https://metacpan.org/pod/Alien::Build)
+as their installer.
+
+### options
+
+#### -l | --long
+
+Also print the version number of the [Alien](https://metacpan.org/pod/Alien) module, and the version of the
+alienized package.
 
 # AUTHOR
 
