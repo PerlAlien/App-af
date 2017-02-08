@@ -2,6 +2,10 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.03      2017-02-08 15:19:49 -0500
+  - af install command prints runtime properties after finish
+  - Tests now pass if ALIEN_INSTALL_TYPE is set
+
 0.02      2017-02-08 12:32:11 -0500
   - Add --dry-run option to the install subcommand
 
