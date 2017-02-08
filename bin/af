@@ -152,6 +152,7 @@ package App::af::install {
   use namespace::autoclean;
   use File::Temp qw( tempdir );
   use MooseX::Types::Path::Tiny qw( AbsPath );
+  use YAML qw( Dump );
   
   with 'App::af';
   with 'App::af::role::alienfile';
@@ -311,6 +312,8 @@ Do not install into the final location.
       File::Copy::Recursive::dircopy($self->stage, $self->prefix) || die "unable to copy @{[ $self->stage ]} => @{[ $self->prefix ]} $!";
       say "copied staged install into @{[ $self->prefix ]}";
     };
+    
+    print Dump($build->runtime_prop);
     
     0;
   }
