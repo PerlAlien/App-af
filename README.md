@@ -109,6 +109,10 @@ but optional when using the `-c` option.
 
 Override the install type.  May be either `share` or `system`.
 
+#### --dry-run
+
+Do not install into the final location.
+
 ## requires
 
 ### Usage

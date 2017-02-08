@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.02      2017-02-08 12:32:11 -0500
   - Add --dry-run option to the install subcommand
 
 0.01      2017-02-08 12:13:23 -0500
