@@ -200,6 +200,10 @@ but optional when using the C<-c> option.
 
 Override the install type.  May be either C<share> or C<system>.
 
+=head4 --dry-run
+
+Do not install into the final location.
+
 =cut
   
   has stage => (
@@ -229,6 +233,12 @@ Override the install type.  May be either C<share> or C<system>.
     opt_type => 's',
   );
   
+  has dry_run => (
+    is     => 'ro',
+    isa    => 'Int',
+    traits => ['App::af::opt'],
+  );
+  
   sub main
   {
     my($self) = @_;
@@ -254,6 +264,17 @@ Override the install type.  May be either C<share> or C<system>.
     my($build, $prefix) = $self->build;
     $self->prefix($prefix) if defined($prefix) && ! $self->prefix;
     
+    if($self->dry_run && ! defined $self->prefix)
+    {
+      $self->prefix(tempdir( CLEANUP => 1 ));
+    }
+    
+    unless(defined $self->prefix)
+    {
+      say STDERR "You must specify a prefix with --prefix";
+      return 2;
+    }
+    
     if(-d $self->prefix->child('_alien'))
     {
       my $test = $self->prefix->child('_alien/test');
@@ -266,12 +287,6 @@ Override the install type.  May be either C<share> or C<system>.
       $test->remove;
     }
     
-    unless(defined $self->prefix)
-    {
-      say STDERR "You must specify a prefix with --prefix";
-      return 2;
-    }
-    
     $build->set_stage($self->stage->stringify);
     $build->set_prefix($self->prefix->stringify);
     $build->load_requires('configure');
@@ -279,20 +294,23 @@ Override the install type.  May be either C<share> or C<system>.
     $build->download;
     $build->build;
     
-    require File::Copy::Recursive;
-    
-    if(-d $self->prefix)
+    unless($self->dry_run)
     {
-      # this is slightly dangerous.
-      foreach my $child ($self->prefix->children)
-      {
-        say "rm -rf $child";
-        $_->remove_tree({ safe => 0 }) for $self->prefix->children;
-      }
-    }
+      require File::Copy::Recursive;
     
-    File::Copy::Recursive::dircopy($self->stage, $self->prefix) || die "unable to copy @{[ $self->stage ]} => @{[ $self->prefix ]} $!";
-    say "copied staged install into @{[ $self->prefix ]}";
+      if(-d $self->prefix)
+      {
+        # this is slightly dangerous.
+        foreach my $child ($self->prefix->children)
+        {
+          say "rm -rf $child";
+          $_->remove_tree({ safe => 0 }) for $self->prefix->children;
+        }
+      }
+    
+      File::Copy::Recursive::dircopy($self->stage, $self->prefix) || die "unable to copy @{[ $self->stage ]} => @{[ $self->prefix ]} $!";
+      say "copied staged install into @{[ $self->prefix ]}";
+    };
     
     0;
   }
