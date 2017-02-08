@@ -98,7 +98,6 @@ if not specified.
   sub main
   {
     my($self) = @_;
-    say $self->local;
     
     unless(-d $self->local)
     {
