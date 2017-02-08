@@ -147,16 +147,6 @@ if not specified.
   __PACKAGE__->meta->make_immutable;
 }
 
-# install
-#   --prefix
-#   --stage
-#   -f | --file alienfile
-#   -c | --class (Alien::)?foo
-
-## Installs or reinstalls the Alien
-## for "-c" mode, --prefix is the distdir
-## "--stage" is ~/.alienbuild/af/tmp/XXXXXX by default
-
 package App::af::install {
   use Moose;
   use namespace::autoclean;
@@ -309,14 +299,6 @@ Override the install type.  May be either C<share> or C<system>.
   __PACKAGE__->meta->make_immutable;
 }
 
-# requires
-#   -f | --file alienfile
-#   -c | --class (Alien::)?foo
-#   -p | --phase ( configure | any | share | system )
-
-## prints in YAML format either all requirements, or the reqs
-## for the particular phase
-
 package App::af::requires {
   use Moose;
   use namespace::autoclean;
@@ -388,31 +370,97 @@ for the meaning of the various phases.
   __PACKAGE__->meta->make_immutable;
 }
 
-# missing
-#   -f | --file alienfile
-#   -c | --class (Alien::)?foo
-#   -p | --phase ( configure | any | share | system )
-
-## prints list of modules not apparently already installed.
-## Without phase, will execute probe to determine which phase
-## to do.
-
 package App::af::missing {
   use Moose;
+  use namespace::autoclean;
+  use Module::Load qw( load );
+  
   with 'App::af';
-  sub main {}
+  with 'App::af::role::alienfile';
+  with 'App::af::role::phase';
+  
+=head2 missing
+
+=head3 Usage
+
+ af missing
+   [
+     ( -f | --file )  alienfile | 
+     ( -c | --class ) class
+   ]
+   [ ( -p | --phase ) ( configure | any | share | system ) ]
+
+=head3 description
+
+Print the requirements for the given phase in list format that are not
+currently fulfilled.  This output can be piped into L<cpanm> in order
+to install any missing requirements:
+
+ % af missing | cpanm
+
+If no phase is specified, then the all missing requirements will be
+printed.
+
+=head3 options
+
+=head4 -f | --file
+
+The L<alienfile>.  If neither this option, nor C<-c> is specified, then 
+C<alienfile> in the current directory will be assumed.
+
+=head4 -c | --class
+
+Get the L<alienfile> from the already installed Alien module.    You may
+omit the C<Alien::> prefix, so for example L<Alien::curl> may be specified
+as simply C<curl>.
+
+=head4 -p | --phase
+
+The phase of the requirement.  Please refer to the L<Alien::Build> documentation
+for the meaning of the various phases.
+
+=cut
+  
+  sub main
+  {
+    my($self) = @_;
+    
+    $self->check_phase;
+    
+    my $build = $self->build;
+    
+    my @reqs;
+    my %need;
+    
+    if($self->phase eq 'all')
+    {
+      @reqs = map { $build->requires($_) } qw( configure any share system );
+    }
+    else
+    {
+      @reqs = ( $build->requires($self->phase) );
+    }
+        
+    foreach my $reqs (@reqs)
+    {
+      foreach my $module (sort keys %$reqs)
+      {
+        my $version = $reqs->{$module};
+        eval {
+          load($module);
+          !$version || $module->VERSION($version);
+        };
+        $need{$module} = 1 if $@
+      }
+    }
+    
+    say $_ for sort keys %need;
+  
+    0;
+  }
+  
   __PACKAGE__->meta->make_immutable;
 }
-
-# prop
-#   -c | --class (Alien::)?foo
-#   --static
-#   --cflags
-#   --libs
-#   --modversion
-#   --bin-dir
-
-## prints the runtime properties of the already installed Alien
 
 package App::af::prop {
   use Moose;
