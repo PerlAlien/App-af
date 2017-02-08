@@ -55,6 +55,7 @@ L<af>
     {
       next unless $attr->does("App::af::opt");
       my $name = $attr->name;
+      $name =~ s/_/-/g;
       $name .= '|' . $attr->short    if $attr->short;
       $name .= "=" . $attr->opt_type if $attr->opt_type;
       push @options, $name => \$args{$attr->name};

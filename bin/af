@@ -228,6 +228,48 @@ package App::af::prop {
   use Moose;
   use namespace::autoclean;
   use Module::Load qw( load );
+
+=head2 prop
+
+=head3 Usage
+
+ af prop ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] [ --modversion ] [ --bin-dir ]
+
+=head3 prop
+
+Print the runtime properties for the given L<Alien> class.  You may
+omit the C<Alien::> prefix, so for example L<Alien::curl> may be queried
+as simply C<curl>.  If no specific properties are requested then the
+entire runtime property hash will be printed in L<YAML> format.
+
+=head3 options
+
+=head4 -c | --class
+
+The class to query for runtime properties.  This option is required.
+
+=head4 --cflags
+
+Print the compiler flags
+
+=head4 --libs
+
+Print the linker flags
+
+=head4 --static
+
+For either the C<--cflags> or C<--libs> option print the static versions.
+
+=head4 --modversion
+
+Print the version of the Alienized package.  This is not the version of
+the L<Alien> module itself.
+
+=head4 --bin-dir
+
+Print the list of directories bundled with a C<share> install.
+
+=cut
   
   with 'App::af';
 

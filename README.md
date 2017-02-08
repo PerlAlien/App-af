@@ -64,6 +64,46 @@ Get the [alienfile](https://metacpan.org/pod/alienfile) from the already install
 The location to store the downloaded resource.  The current directory
 if not specified.
 
+## prop
+
+### Usage
+
+    af prop ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] [ --modversion ] [ --bin-dir ]
+
+### prop
+
+Print the runtime properties for the given [Alien](https://metacpan.org/pod/Alien) class.  You may
+omit the `Alien::` prefix, so for example [Alien::curl](https://metacpan.org/pod/Alien::curl) may be queried
+as simply `curl`.  If no specific properties are requested then the
+entire runtime property hash will be printed in [YAML](https://metacpan.org/pod/YAML) format.
+
+### options
+
+#### -c | --class
+
+The class to query for runtime properties.  This option is required.
+
+#### --cflags
+
+Print the compiler flags
+
+#### --libs
+
+Print the linker flags
+
+#### --static
+
+For either the `--cflags` or `--libs` option print the static versions.
+
+#### --modversion
+
+Print the version of the Alienized package.  This is not the version of
+the [Alien](https://metacpan.org/pod/Alien) module itself.
+
+#### --bin-dir
+
+Print the list of directories bundled with a `share` install.
+
 # AUTHOR
 
 Graham Ollis <plicease@cpan.org>

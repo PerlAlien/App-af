@@ -28,6 +28,7 @@ $modules{$_} = $_ for qw(
   Test::Exit
   Test::More
   Test::Script
+  YAML
   lib
   namespace::autoclean
 );
