@@ -17,7 +17,7 @@ use File::chdir;
  af requires   --help
  af missing    --help
  af prop       --help
- af list      --help
+ af list       --help
 
 =head1 DESCRIPTION
 
