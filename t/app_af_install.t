@@ -7,6 +7,8 @@ use File::Temp qw( tempdir );
 use Path::Tiny qw( path );
 do './bin/af';
 
+delete $ENV{ALIEN_INSTALL_TYPE};
+
 subtest 'basic' => sub {
 
   local $CWD = tempdir( CLEANUP => 1 );
