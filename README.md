@@ -35,10 +35,7 @@ Print the version of `af` and exit.
 ### Usage
 
     af download
-      [
-        ( -f | --file )  alienfile | 
-        ( -c | --class ) class
-      ]
+      [ ( -f | --file )  alienfile | ( -c | --class ) class ]
       [ ( -l | --local ) directory ]
 
 ### description
@@ -70,11 +67,9 @@ if not specified.
 ### Usage
 
     af install
-      [
-        ( -f | --file )  alienfile | 
-        ( -c | --class ) class
-      ]
+      [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
       [ --stage directory ] [ --prefix directory ] [ --type ( share | system ) ]
+      [ --root directory ] [ --before hook command ] [ --after hook command ]
 
 ### description
 
@@ -117,15 +112,35 @@ Do not install into the final location.
 
 Build in root
 
+#### --before
+
+Execute the given command before the given hook.  Note that the same 
+hook my execute several times for a given recipe.  Example, to open up 
+an interactive shell before the build has started, right after the 
+extraction:
+
+    % af install --before build bash
+
+The build configuration is check pointed, so you can read the install 
+and runtime properties in the `state.json` file in the build root.
+
+#### --after
+
+Execute the given command after the given hook.  Note that the same hook 
+my execute several times for a given recipe.  Example, to open up an 
+interactive shell after the build has completed:
+
+    % af install --after build bash
+
+The build configuration is check pointed, so you can read the install 
+and runtime properties in the `state.json` file in the build root.
+
 ## requires
 
 ### Usage
 
     af requires
-      [
-        ( -f | --file )  alienfile | 
-        ( -c | --class ) class
-      ]
+      [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
       [ ( -p | --phase ) ( configure | any | share | system ) ]
 
 ### description
@@ -157,10 +172,7 @@ for the meaning of the various phases.
 ### Usage
 
     af missing
-      [
-        ( -f | --file )  alienfile | 
-        ( -c | --class ) class
-      ]
+      [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
       [ ( -p | --phase ) ( configure | any | share | system ) ]
 
 ### description
@@ -196,7 +208,9 @@ for the meaning of the various phases.
 
 ### Usage
 
-    af prop ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] [ --modversion ] [ --bin-dir ]
+    af prop 
+      ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] 
+      [ --modversion ] [ --bin-dir ]
 
 ### prop
 

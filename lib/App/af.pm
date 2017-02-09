@@ -58,7 +58,16 @@ L<af>
       $name =~ s/_/-/g;
       $name .= '|' . $attr->short    if $attr->short;
       $name .= "=" . $attr->opt_type if $attr->opt_type;
-      push @options, $name => \$args{$attr->name};
+      if($attr->opt_type =~ /\{/)
+      {
+        my @array;
+        $args{$attr->name} = \@array;
+        push @options, $name => \@array;
+      }
+      else
+      {
+        push @options, $name => \$args{$attr->name};
+      }
     }
     
     GetOptionsFromArray(\@args, @options)

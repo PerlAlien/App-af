@@ -54,10 +54,7 @@ package App::af::download {
 =head3 Usage
 
  af download
-   [
-     ( -f | --file )  alienfile | 
-     ( -c | --class ) class
-   ]
+   [ ( -f | --file )  alienfile | ( -c | --class ) class ]
    [ ( -l | --local ) directory ]
 
 =head3 description
@@ -162,11 +159,9 @@ package App::af::install {
 =head3 Usage
 
  af install
-   [
-     ( -f | --file )  alienfile | 
-     ( -c | --class ) class
-   ]
+   [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
    [ --stage directory ] [ --prefix directory ] [ --type ( share | system ) ]
+   [ --root directory ] [ --before hook command ] [ --after hook command ]
 
 =head3 description
 
@@ -208,6 +203,29 @@ Do not install into the final location.
 =head4 --root
 
 Build in root
+
+=head4 --before
+
+Execute the given command before the given hook.  Note that the same 
+hook my execute several times for a given recipe.  Example, to open up 
+an interactive shell before the build has started, right after the 
+extraction:
+
+ % af install --before build bash
+
+The build configuration is check pointed, so you can read the install 
+and runtime properties in the C<state.json> file in the build root.
+
+=head4 --after
+
+Execute the given command after the given hook.  Note that the same hook 
+my execute several times for a given recipe.  Example, to open up an 
+interactive shell after the build has completed:
+
+ % af install --after build bash
+
+The build configuration is check pointed, so you can read the install 
+and runtime properties in the C<state.json> file in the build root.
 
 =cut
   
@@ -256,6 +274,20 @@ Build in root
     },
   );
   
+  has before => (
+    is       => 'ro',
+    isa      => 'ArrayRef[Str]',
+    traits   => ['App::af::opt'],
+    opt_type => 's{2}',
+  );
+
+  has after => (
+    is       => 'ro',
+    isa      => 'ArrayRef[Str]',
+    traits   => ['App::af::opt'],
+    opt_type => 's{2}',
+  );
+  
   sub main
   {
     my($self) = @_;
@@ -280,6 +312,41 @@ Build in root
     
     my($build, $prefix) = $self->build( root => $self->root->stringify );
     $self->prefix($prefix) if defined($prefix) && ! $self->prefix;
+    
+    while(@{ $self->before })
+    {
+      my $hook    = shift @{ $self->before };
+      my $command = shift @{ $self->before };
+      
+      $build->meta->before_hook(
+        $hook => sub {
+          my($build) = @_;
+          $build->log(" [ before $hook ] + $command");
+          $build->checkpoint;
+          system($command);
+        }
+      );
+    }
+    
+    while(@{ $self->after })
+    {
+      my $hook    = shift @{ $self->after };
+      my $command = shift @{ $self->after };
+
+      $build->meta->around_hook(
+        $hook => sub {
+          my $orig = shift;
+          my $ret = eval { $orig->(@_) };
+          my $error = $@;
+          $build->log(" [ after $hook ] + $command");
+          $build->checkpoint;
+          system($command);
+          die $error if $error;
+          $ret;
+        },
+      );      
+    }
+    
     
     if($self->dry_run && ! defined $self->prefix)
     {
@@ -346,10 +413,7 @@ package App::af::requires {
 =head3 Usage
 
  af requires
-   [
-     ( -f | --file )  alienfile | 
-     ( -c | --class ) class
-   ]
+   [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
    [ ( -p | --phase ) ( configure | any | share | system ) ]
 
 =head3 description
@@ -421,10 +485,7 @@ package App::af::missing {
 =head3 Usage
 
  af missing
-   [
-     ( -f | --file )  alienfile | 
-     ( -c | --class ) class
-   ]
+   [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
    [ ( -p | --phase ) ( configure | any | share | system ) ]
 
 =head3 description
@@ -508,7 +569,9 @@ package App::af::prop {
 
 =head3 Usage
 
- af prop ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] [ --modversion ] [ --bin-dir ]
+ af prop 
+   ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] 
+   [ --modversion ] [ --bin-dir ]
 
 =head3 prop
 

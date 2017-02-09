@@ -2,6 +2,7 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
   - Added --root option or af install
+  - Added --before and --after options for af install (gh#1 plicease)
 
 0.03      2017-02-08 15:19:49 -0500
   - af install command prints runtime properties after finish
