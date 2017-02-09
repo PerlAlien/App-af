@@ -181,10 +181,13 @@ Print the requirements for the given phase in list format that are not
 currently fulfilled.  This output can be piped into [cpanm](https://metacpan.org/pod/cpanm) in order
 to install any missing requirements:
 
-    % af missing | cpanm
+    % af missing -p configure | cpanm
+    % af missing              | cpanm
 
-If no phase is specified, then the all missing requirements will be
-printed.
+If no phase is specified, then missing prereqs for configure, and either 
+share or system will be printed depending on what type of install is 
+detected (for this to work you may need to install the configure 
+prereqs, since the probe may use configure required modules).
 
 ### options
 
@@ -201,8 +204,8 @@ as simply `curl`.
 
 #### -p | --phase
 
-The phase of the requirement.  Please refer to the [Alien::Build](https://metacpan.org/pod/Alien::Build) documentation
-for the meaning of the various phases.
+The phase of the requirement.  Please refer to the [Alien::Build](https://metacpan.org/pod/Alien::Build) 
+documentation for the meaning of the various phases.
 
 ## prop
 

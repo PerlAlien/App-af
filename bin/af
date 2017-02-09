@@ -494,10 +494,13 @@ Print the requirements for the given phase in list format that are not
 currently fulfilled.  This output can be piped into L<cpanm> in order
 to install any missing requirements:
 
- % af missing | cpanm
+ % af missing -p configure | cpanm
+ % af missing              | cpanm
 
-If no phase is specified, then the all missing requirements will be
-printed.
+If no phase is specified, then missing prereqs for configure, and either 
+share or system will be printed depending on what type of install is 
+detected (for this to work you may need to install the configure 
+prereqs, since the probe may use configure required modules).
 
 =head3 options
 
@@ -514,8 +517,8 @@ as simply C<curl>.
 
 =head4 -p | --phase
 
-The phase of the requirement.  Please refer to the L<Alien::Build> documentation
-for the meaning of the various phases.
+The phase of the requirement.  Please refer to the L<Alien::Build> 
+documentation for the meaning of the various phases.
 
 =cut
   
@@ -533,6 +536,10 @@ for the meaning of the various phases.
     if($self->phase eq 'all')
     {
       @reqs = map { $build->requires($_) } qw( configure any share system );
+      @reqs = (
+        $build->requires('configure'),
+        $build->requires($build->install_type),
+      );
     }
     else
     {
