@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.04      2017-02-09 12:51:16 -0500
   - Added --root option or af install
   - Added --before and --after options for af install (gh#1 plicease)
   - af missing is a little more useful.  Prints out either share OR
