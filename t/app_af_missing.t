@@ -13,7 +13,7 @@ subtest 'basic' => sub {
 
   alienfile q{
     use alienfile;
-    configure { requires 'Bogus1::Bogus1' };
+    #configure { requires 'Bogus1::Bogus1' };
     requires 'Bogus2::Bogus2';
     share { requires 'Bogus3::Bogus3' };
     sys { requires 'Bogus4::Bogus4' };

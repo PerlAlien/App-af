@@ -475,6 +475,7 @@ package App::af::missing {
   use Moose;
   use namespace::autoclean;
   use Module::Load qw( load );
+  use Capture::Tiny qw( capture );
   
   with 'App::af';
   with 'App::af::role::alienfile';
@@ -535,6 +536,8 @@ documentation for the meaning of the various phases.
     
     if($self->phase eq 'all')
     {
+      $build->load_requires('configure');
+      capture { $build->probe };
       @reqs = map { $build->requires($_) } qw( configure any share system );
       @reqs = (
         $build->requires('configure'),
