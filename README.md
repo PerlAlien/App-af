@@ -123,6 +123,7 @@ extraction:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the `state.json` file in the build root.
+Use \* or % as the hook to run the command before all hooks.
 
 #### --after
 
@@ -134,6 +135,7 @@ interactive shell after the build has completed:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the `state.json` file in the build root.
+Use \* or % as the hook to run the command before all hooks.
 
 ## requires
 
