@@ -215,6 +215,7 @@ extraction:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the C<state.json> file in the build root.
+Use * or % as the hook to run the command before all hooks.
 
 =head4 --after
 
@@ -226,6 +227,7 @@ interactive shell after the build has completed:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the C<state.json> file in the build root.
+Use * or % as the hook to run the command before all hooks.
 
 =cut
   
@@ -313,19 +315,28 @@ and runtime properties in the C<state.json> file in the build root.
     my($build, $prefix) = $self->build( root => $self->root->stringify );
     $self->prefix($prefix) if defined($prefix) && ! $self->prefix;
     
+    my @all_hooks = qw(
+      download fetch decode prefer extract patch
+      build stage gather_share gather_system
+    );
+    
     while(@{ $self->before })
     {
       my $hook    = shift @{ $self->before };
       my $command = shift @{ $self->before };
       
+      my @hook = $hook =~ /^(\%|\*)$/ 
+        ? @all_hooks
+        : ($hook);
+      
       $build->meta->before_hook(
-        $hook => sub {
+        $_ => sub {
           my($build) = @_;
-          $build->log(" [ before $hook ] + $command");
+          $build->log(" [ before @{[ $build->hook_prop->{name} ]} ] + $command");
           $build->checkpoint;
-          system($command);
+          $build->system($command);
         }
-      );
+      ) for @hook;
     }
     
     while(@{ $self->after })
@@ -333,18 +344,22 @@ and runtime properties in the C<state.json> file in the build root.
       my $hook    = shift @{ $self->after };
       my $command = shift @{ $self->after };
 
+      my @hook = $hook =~ /^(\%|\*)$/ 
+        ? @all_hooks
+        : ($hook);
+      
       $build->meta->around_hook(
-        $hook => sub {
+        $_ => sub {
           my $orig = shift;
           my $ret = eval { $orig->(@_) };
           my $error = $@;
-          $build->log(" [ after $hook ] + $command");
+          $build->log(" [ after @{[ $build->hook_prop->{name} ]} ] + $command");
           $build->checkpoint;
-          system($command);
+          $build->system($command);
           die $error if $error;
           $ret;
         },
-      );      
+      ) for @hook
     }
     
     

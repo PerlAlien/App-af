@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Add wildcards % or * for --before and --after options on af install
+    subcommand
 
 0.05      2017-02-09 18:12:17 -0500
   - Fixed bug in af missing command
