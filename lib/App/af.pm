@@ -58,7 +58,7 @@ L<af>
       $name =~ s/_/-/g;
       $name .= '|' . $attr->short    if $attr->short;
       $name .= "=" . $attr->opt_type if $attr->opt_type;
-      if($attr->opt_type =~ /\{/)
+      if($attr->is_array)
       {
         my @array;
         $args{$attr->name} = \@array;
@@ -223,6 +223,16 @@ package App::af::opt {
     is      => 'rw',
     isa     => 'Str',
     default => '',
+  );
+  
+  has is_array => (
+    is      => 'rw',
+    isa     => 'Int',
+    lazy    => 1,
+    default => sub {
+      my($self) = @_;
+      int $self->opt_type =~ /\{/;
+    },
   );
 
 }

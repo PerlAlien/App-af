@@ -150,6 +150,7 @@ package App::af::install {
   use File::Temp qw( tempdir );
   use MooseX::Types::Path::Tiny qw( AbsPath );
   use YAML qw( Dump );
+  use Path::Tiny qw( path );
   
   with 'App::af';
   with 'App::af::role::alienfile';
@@ -163,6 +164,7 @@ package App::af::install {
    [ --prefix directory | --dry-run ] [ --stage directory ]
    [ --type ( share | system ) ] [ --root directory ] 
    [ --before hook command ] [ --after hook command ]
+   [ -I lib ] [ --blib ]
 
 =head3 description
 
@@ -234,6 +236,14 @@ Use * or % as the hook to run the command before all hooks.  You can
 use C<:repl> as the command to open up a Perl REPL (Read-Eval-Print-Loop)
 to inspect the C<$build> and C<$meta> objects.
 
+=head4 -I
+
+Add directory to the Perl search lib (like -I on L<perl>).
+
+=head4 --blib
+
+Use the blib from the current directory.
+
 =cut
   
   has stage => (
@@ -295,11 +305,41 @@ to inspect the C<$build> and C<$meta> objects.
     opt_type => 's{2}',
   );
   
+  has I => (
+    is       => 'ro',
+    isa      => 'ArrayRef[Str]',
+    traits   => ['App::af::opt'],
+    opt_type => 's',
+    is_array => 1,
+  );
+  
+  has blib => (
+    is       => 'ro',
+    isa      => 'Int',
+    traits   => ['App::af::opt'],
+  );
+  
   sub main
   {
     my($self) = @_;
-    
+  
     local $ENV{ALIEN_INSTALL_TYPE} = $ENV{ALIEN_INSTALL_TYPE};
+    
+    foreach my $inc (reverse @{ $self->I })
+    {
+      require lib;
+      lib->import($inc);
+    }
+    
+    if($self->blib)
+    {
+      require blib;
+      blib->import;
+    }
+
+    # make sure @INC entries are absolute, since $build
+    # may do a lot of directory changes    
+    @INC = map { ref $_ ? $_ : path($_)->absolute->stringify } @INC;
     
     if(defined $self->type)
     {

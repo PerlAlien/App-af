@@ -71,6 +71,7 @@ if not specified.
       [ --prefix directory | --dry-run ] [ --stage directory ]
       [ --type ( share | system ) ] [ --root directory ] 
       [ --before hook command ] [ --after hook command ]
+      [ -I lib ] [ --blib ]
 
 ### description
 
@@ -141,6 +142,14 @@ and runtime properties in the `state.json` file in the build root.
 Use \* or % as the hook to run the command before all hooks.  You can
 use `:repl` as the command to open up a Perl REPL (Read-Eval-Print-Loop)
 to inspect the `$build` and `$meta` objects.
+
+#### -I
+
+Add directory to the Perl search lib (like -I on [perl](https://metacpan.org/pod/perl)).
+
+#### --blib
+
+Use the blib from the current directory.
 
 ## requires
 
