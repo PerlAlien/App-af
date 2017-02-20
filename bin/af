@@ -160,8 +160,9 @@ package App::af::install {
 
  af install
    [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
-   [ --stage directory ] [ --prefix directory ] [ --type ( share | system ) ]
-   [ --root directory ] [ --before hook command ] [ --after hook command ]
+   [ --prefix directory | --dry-run ] [ --stage directory ]
+   [ --type ( share | system ) ] [ --root directory ] 
+   [ --before hook command ] [ --after hook command ]
 
 =head3 description
 
@@ -215,7 +216,9 @@ extraction:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the C<state.json> file in the build root.
-Use * or % as the hook to run the command before all hooks.
+Use * or % as the hook to run the command before all hooks.  You can
+use C<:repl> as the command to open up a Perl REPL (Read-Eval-Print-Loop)
+to inspect the C<$build> and C<$meta> objects.
 
 =head4 --after
 
@@ -227,7 +230,9 @@ interactive shell after the build has completed:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the C<state.json> file in the build root.
-Use * or % as the hook to run the command before all hooks.
+Use * or % as the hook to run the command before all hooks.  You can
+use C<:repl> as the command to open up a Perl REPL (Read-Eval-Print-Loop)
+to inspect the C<$build> and C<$meta> objects.
 
 =cut
   
@@ -316,9 +321,25 @@ Use * or % as the hook to run the command before all hooks.
     $self->prefix($prefix) if defined($prefix) && ! $self->prefix;
     
     my @all_hooks = qw(
-      download fetch decode prefer extract patch
+      probe download fetch decode prefer extract patch
       build stage gather_share gather_system
     );
+    
+    my $repl = sub {
+      no warnings 'once';
+      *Shell::Perl::exit = sub { die bless {}, 'App::af::pirl::quit' };
+      require Shell::Perl;
+      my $pirl = Shell::Perl->new;
+      $pirl->set_package("App::af::pirl");
+      $App::af::pirl::build = $build;
+      $App::af::pirl::meta  = $build->meta;
+      eval { $pirl->run };
+      my $error = $@;
+      if($error && ref $error ne 'App::af::pirl::quit')
+      {
+        warn $error;
+      }
+    };
     
     while(@{ $self->before })
     {
@@ -334,7 +355,9 @@ Use * or % as the hook to run the command before all hooks.
           my($build) = @_;
           $build->log(" [ before @{[ $build->hook_prop->{name} ]} ] + $command");
           $build->checkpoint;
-          $build->system($command);
+          $command eq ':repl'
+            ? $repl->()
+            : $build->system($command);
         }
       ) for @hook;
     }
@@ -355,7 +378,9 @@ Use * or % as the hook to run the command before all hooks.
           my $error = $@;
           $build->log(" [ after @{[ $build->hook_prop->{name} ]} ] + $command");
           $build->checkpoint;
-          $build->system($command);
+          $command eq ':repl'
+            ? $repl->()
+            : $build->system($command);
           die $error if $error;
           $ret;
         },
@@ -370,7 +395,7 @@ Use * or % as the hook to run the command before all hooks.
     
     unless(defined $self->prefix)
     {
-      say STDERR "You must specify a prefix with --prefix";
+      say STDERR "You must specify a prefix with --prefix or use --dry-run";
       return 2;
     }
     

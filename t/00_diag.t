@@ -18,6 +18,7 @@ $modules{$_} = $_ for qw(
   Moose
   MooseX::Types::Path::Tiny
   Path::Tiny
+  Shell::Perl
   Test2::Suite
   Test::Exit
   Test::More

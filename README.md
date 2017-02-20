@@ -68,8 +68,9 @@ if not specified.
 
     af install
       [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
-      [ --stage directory ] [ --prefix directory ] [ --type ( share | system ) ]
-      [ --root directory ] [ --before hook command ] [ --after hook command ]
+      [ --prefix directory | --dry-run ] [ --stage directory ]
+      [ --type ( share | system ) ] [ --root directory ] 
+      [ --before hook command ] [ --after hook command ]
 
 ### description
 
@@ -123,7 +124,9 @@ extraction:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the `state.json` file in the build root.
-Use \* or % as the hook to run the command before all hooks.
+Use \* or % as the hook to run the command before all hooks.  You can
+use `:repl` as the command to open up a Perl REPL (Read-Eval-Print-Loop)
+to inspect the `$build` and `$meta` objects.
 
 #### --after
 
@@ -135,7 +138,9 @@ interactive shell after the build has completed:
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the `state.json` file in the build root.
-Use \* or % as the hook to run the command before all hooks.
+Use \* or % as the hook to run the command before all hooks.  You can
+use `:repl` as the command to open up a Perl REPL (Read-Eval-Print-Loop)
+to inspect the `$build` and `$meta` objects.
 
 ## requires
 
