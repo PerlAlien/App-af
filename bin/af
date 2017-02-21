@@ -367,18 +367,13 @@ Use the blib from the current directory.
     
     my $repl = sub {
       no warnings 'once';
-      *Shell::Perl::exit = sub { die bless {}, 'App::af::pirl::quit' };
       require Shell::Perl;
-      my $pirl = Shell::Perl->new;
+      my $pirl = Shell::Perl->new(on_quit => 'return');
       $pirl->set_package("App::af::pirl");
       $App::af::pirl::build = $build;
       $App::af::pirl::meta  = $build->meta;
       eval { $pirl->run };
-      my $error = $@;
-      if($error && ref $error ne 'App::af::pirl::quit')
-      {
-        warn $error;
-      }
+      warn $@ if $@;
     };
     
     while(@{ $self->before })
