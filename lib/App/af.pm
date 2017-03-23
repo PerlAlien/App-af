@@ -112,7 +112,6 @@ package App::af::role::alienfile {
   use Moose::Role;
   use namespace::autoclean;
   use MooseX::Types::Path::Tiny qw( AbsPath );
-  use Module::Load qw( load );
   use Path::Tiny qw( path );
   use File::Temp qw( tempdir );
   
@@ -147,7 +146,9 @@ package App::af::role::alienfile {
     if($self->class)
     {
       my $class = $self->class =~ /::/ ? $self->class : "Alien::" . $self->class;
-      load $class;
+      my $pm    = $class . '.pm';
+      $pm =~ s/::/\//g;
+      require $pm;
       if($class->can('runtime_prop') && $class->runtime_prop)
       {
         my $dist = path($class->dist_dir);

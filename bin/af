@@ -549,7 +549,6 @@ for the meaning of the various phases.
 package App::af::missing {
   use Moose;
   use namespace::autoclean;
-  use Module::Load qw( load );
   use Capture::Tiny qw( capture );
   
   with 'App::af';
@@ -630,7 +629,9 @@ documentation for the meaning of the various phases.
       {
         my $version = $reqs->{$module};
         eval {
-          load($module);
+          my $pm = $module . '.pm';
+          $pm =~ s/::/\//g;
+          require $pm;
           !$version || $module->VERSION($version);
         };
         $need{$module} = 1 if $@
@@ -648,7 +649,6 @@ documentation for the meaning of the various phases.
 package App::af::prop {
   use Moose;
   use namespace::autoclean;
-  use Module::Load qw( load );
 
 =head2 prop
 
@@ -721,7 +721,11 @@ Print the list of directories bundled with a C<share> install.
     
     my $class = $self->class =~ /::/ ? $self->class : 'Alien::' . $self->class;
 
-    load $class;    
+    {
+      my $pm = $class . '.pm';
+      $pm =~ s/::/\//g;
+      require $pm;
+    }
     unless($class->can('runtime_prop'))
     {
       say STDERR "$class was not installed with Alien::Build";
@@ -791,7 +795,6 @@ package App::af::list {
   use Moose;
   use namespace::autoclean;
   use Path::Tiny qw( path );
-  use Module::Load qw( load );
   use Text::Table;
   
 =head2 list
@@ -849,7 +852,11 @@ alienized package.
           next;
         }
         
-        eval { load $class };
+        eval {
+          my $pm = $class . '.pm';
+          $pm =~ s/::/\//g;
+          require $pm;
+        };
         if($@)
         {
           $table->add($class, '---', '---');

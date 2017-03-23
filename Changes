@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Update for more recent Alien::Base / Alien::Build
 
 0.08      2017-02-22 07:26:49 +1100
   - Removed unintended download.pm
