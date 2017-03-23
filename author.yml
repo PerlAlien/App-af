@@ -9,6 +9,7 @@ pod_spelling_system:
     - subcommand
     - subcommands
     - alienized
+    - REPL
 
 pod_coverage:
   skip: 0
