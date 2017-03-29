@@ -16,3 +16,7 @@ perl:
 
 script:
   - dzil test -v
+
+env:
+  global:
+    - ALIEN_BASE_NO_ABMB=1
