@@ -173,6 +173,14 @@ package App::af::role::alienfile {
       say STDERR "unable to read $alienfile";
       exit 2;
     }
+    
+    if(my $patch = $alienfile->parent->child('patch'))
+    {
+      if(-d $patch)
+      {
+        $args{patch} = "$patch";
+      }
+    }
   
     require Alien::Build;
     my $build = Alien::Build->load("$alienfile", %args);

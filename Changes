@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Correctly detect patch directory at the same level as the alienfile (fix for gh#3)
 
 0.09      2017-03-23 12:34:15 -0400
   - Update for more recent Alien::Base / Alien::Build
