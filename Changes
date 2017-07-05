@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+0.11      2017-07-05 13:54:54 -0400
   - Added probe subcommand
   - Migrated from Test2::Bundle::Extended to Test2::V0
 
