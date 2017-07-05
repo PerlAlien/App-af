@@ -5,6 +5,7 @@ Command line tool for alienfile
 # SYNOPSIS
 
     af download   --help
+    af probe      --help
     af install    --help
     af requires   --help
     af missing    --help
@@ -61,6 +62,44 @@ as simply `curl`.
 
 The location to store the downloaded resource.  The current directory
 if not specified.
+
+## probe
+
+### Usage
+
+    af probe
+      [ ( -f | --file ) alienfile | ( -c | --class ) class ]
+      [ --root directory ]
+      [ --before hook command ] [ --after hook command ]
+      [ -I lib ] [ --blib ]
+
+### description
+
+Probe system for existing library or tool using the given [alienfile](https://metacpan.org/pod/alienfile).
+
+#### -f | --file
+
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+`alienfile` in the current directory will be assumed.
+
+#### -c | --class
+
+Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installed Alien module.    You may
+omit the `Alien::` prefix, so for example [Alien::curl](https://metacpan.org/pod/Alien::curl) may be specified
+as simply `curl`.  If you do not specify the `--prefix` option, the
+package will replace the already installed one.
+
+#### --root
+
+Build in root
+
+#### -I
+
+Add directory to the Perl search lib (like -I on [perl](https://metacpan.org/pod/perl)).
+
+#### --blib
+
+Use the blib from the current directory.
 
 ## install
 
