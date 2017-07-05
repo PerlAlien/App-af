@@ -217,6 +217,55 @@ package App::af::role::phase {
   
 }
 
+package App::af::role::libandblib {
+
+  use Moose::Role;
+  use namespace::autoclean;
+  use Path::Tiny qw( path );
+
+  has I => (
+    is       => 'ro',
+    isa      => 'ArrayRef[Str]',
+    traits   => ['App::af::opt'],
+    opt_type => 's',
+    is_array => 1,
+  );
+  
+  has blib => (
+    is       => 'ro',
+    isa      => 'Int',
+    traits   => ['App::af::opt'],
+  );
+  
+  around main => sub {
+    my $orig = shift;
+    my $self = shift;
+    my @args = @_;
+
+    local @INC = @INC;
+
+    foreach my $inc (reverse @{ $self->I })
+    {
+      require lib;
+      lib->import($inc);
+    }
+    
+    if($self->blib)
+    {
+      require blib;
+      blib->import;
+    }
+
+    # make sure @INC entries are absolute, since $build
+    # may do a lot of directory changes
+    @INC = map { ref $_ ? $_ : path($_)->absolute->stringify } @INC;
+    
+    $orig->($self, @args);
+    
+  };
+
+}
+
 package App::af::opt {
 
   use Moose::Role;

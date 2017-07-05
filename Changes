@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added probe subcommand
 
 0.10      2017-06-05 11:12:26 -0400
   - Correctly detect patch directory at the same level as the alienfile (fix for gh#3)
