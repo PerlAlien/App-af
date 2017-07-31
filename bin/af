@@ -665,7 +665,7 @@ documentation for the meaning of the various phases.
     
     $self->check_phase;
     
-    my $build = $self->build;
+    my(undef,undef, $build) = capture { $self->build };
     
     my @reqs;
     my %need;
