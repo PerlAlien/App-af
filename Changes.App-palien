@@ -1,6 +1,6 @@
 Revision history for {{$dist->name}}
 
-{{$NEXT}}
+After 0.03 App-palien was merged with App-af
 
 0.03      2016-03-05 06:56:40 -0500
   - added --bin-dir and --dir-sep
