@@ -18,6 +18,7 @@ $modules{$_} = $_ for qw(
   File::chdir
   Moose
   MooseX::Types::Path::Tiny
+  Path::Class
   Path::Tiny
   Shell::Perl
   Test2::Tools::Basic

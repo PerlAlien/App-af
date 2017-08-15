@@ -1,7 +1,9 @@
-package App::palien;
-
 use strict;
 use warnings;
+use 5.014;
+
+package App::palien {
+
 use Getopt::Long qw( GetOptions );
 use Pod::Usage qw( pod2usage );
 use Path::Class qw( file dir );
@@ -129,7 +131,7 @@ sub main
     }
     else
     {
-      $alien = find($module);
+      $alien = _find($module);
       next unless $alien;
     }
     
@@ -176,7 +178,7 @@ sub main
 
 my $byname;
 
-sub find
+sub _find
 {
   my($q) = @_;
 
@@ -203,6 +205,8 @@ sub find
   my $module = $byname->{$q};
   
   defined $module ? eval qq{ require $module; $module->new } || warn "unable to load $module: $@" && () : ();
+}
+
 }
 
 1;
