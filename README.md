@@ -229,7 +229,7 @@ for the meaning of the various phases.
     af missing
       [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
       [ ( -p | --phase ) ( configure | any | share | system ) ]
-      [ --plugin ]
+      [ --plugin | --precompile ]
 
 ### description
 
@@ -267,6 +267,15 @@ documentation for the meaning of the various phases.
 
 Print out missing plugins.  Caveat: to do this, `af` mocks part of
 [Alien::Build::Meta](https://metacpan.org/pod/Alien::Build::Meta), which may or may not break in the future.
+
+## --precompile
+
+Print out missing modules that are needed before the [alienfile](https://metacpan.org/pod/alienfile) is even
+compiled.  These are usually `configure` time prereqs, but if they are
+`use`d in the [alienfile](https://metacpan.org/pod/alienfile) instead of being declared as a `requires`, then
+there is no way for [Alien::Build](https://metacpan.org/pod/Alien::Build) to query for them.  Caveat: since
+[alienfile](https://metacpan.org/pod/alienfile) is arbitrary Perl code, there may be corner cases not covered
+by this option.
 
 ## prop
 

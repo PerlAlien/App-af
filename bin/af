@@ -625,7 +625,7 @@ package App::af::missing {
  af missing
    [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
    [ ( -p | --phase ) ( configure | any | share | system ) ]
-   [ --plugin ]
+   [ --plugin | --precompile ]
 
 =head3 description
 
@@ -664,9 +664,24 @@ documentation for the meaning of the various phases.
 Print out missing plugins.  Caveat: to do this, C<af> mocks part of
 L<Alien::Build::Meta>, which may or may not break in the future.
 
+=head2 --precompile
+
+Print out missing modules that are needed before the L<alienfile> is even
+compiled.  These are usually C<configure> time prereqs, but if they are
+C<use>d in the L<alienfile> instead of being declared as a C<requires>, then
+there is no way for L<Alien::Build> to query for them.  Caveat: since
+L<alienfile> is arbitrary Perl code, there may be corner cases not covered
+by this option.
+
 =cut
   
   has plugin => (
+    is     => 'ro',
+    isa    => 'Int',
+    traits => ['App::af::opt'],
+  );
+  
+  has precompile => (
     is     => 'ro',
     isa    => 'Int',
     traits => ['App::af::opt'],
@@ -701,6 +716,24 @@ L<Alien::Build::Meta>, which may or may not break in the future.
       my(undef, undef, $build) = capture { $self->build };
       print "$_\n" for sort keys %need;
       return 0;
+    }
+    
+    if($self->precompile)
+    {
+      my %need;
+    
+      foreach my $line ($self->file->lines)
+      {
+        chomp $line;
+        if($line =~ /^\s*use\s+([A-Za-z_0-9]+(::[A-Za-z_0-9]+)*)/)
+        {
+          my $mod = $1;
+          eval qq{ use $mod () };
+          if($@) { $need{$mod}++ };
+        }
+      }
+      print "$_\n" for sort keys %need;
+      exit 0;
     }
     
     my(undef,undef, $build) = capture { $self->build };
