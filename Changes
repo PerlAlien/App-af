@@ -1,6 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - Added --plugin option
 
 0.14      2017-08-15 11:27:54 -0400
   - Merged App-palien and App-af.  For the old App-palien change log

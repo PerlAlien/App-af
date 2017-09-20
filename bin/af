@@ -625,6 +625,7 @@ package App::af::missing {
  af missing
    [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
    [ ( -p | --phase ) ( configure | any | share | system ) ]
+   [ --plugin ]
 
 =head3 description
 
@@ -658,13 +659,49 @@ as simply C<curl>.
 The phase of the requirement.  Please refer to the L<Alien::Build> 
 documentation for the meaning of the various phases.
 
+=head4 --plugin
+
+Print out missing plugins.  Caveat: to do this, C<af> mocks part of
+L<Alien::Build::Meta>, which may or may not break in the future.
+
 =cut
   
+  has plugin => (
+    is     => 'ro',
+    isa    => 'Int',
+    traits => ['App::af::opt'],
+  );
+
   sub main
   {
     my($self) = @_;
     
     $self->check_phase;
+
+    if($self->plugin)
+    {
+      require Alien::Build;
+      require Test2::Mock;
+      
+      my %need;
+      
+      my $mock = Test2::Mock->new(class => 'Alien::Build::Meta');
+      $mock->around('apply_plugin' => sub {
+        my($orig, $self, @args) = @_;
+        local @INC = @INC;
+        push @INC, sub {
+          my(undef, $filename) = @_;
+          my $mod = $filename;
+          $mod =~ s{/}{::}g;
+          $mod =~ s{\.pm$}{};
+          $need{$mod}++;
+        };
+        eval { $orig->($self, @args) };
+      });
+      my(undef, undef, $build) = capture { $self->build };
+      print "$_\n" for sort keys %need;
+      return 0;
+    }
     
     my(undef,undef, $build) = capture { $self->build };
     

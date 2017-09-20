@@ -229,6 +229,7 @@ for the meaning of the various phases.
     af missing
       [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
       [ ( -p | --phase ) ( configure | any | share | system ) ]
+      [ --plugin ]
 
 ### description
 
@@ -261,6 +262,11 @@ as simply `curl`.
 
 The phase of the requirement.  Please refer to the [Alien::Build](https://metacpan.org/pod/Alien::Build) 
 documentation for the meaning of the various phases.
+
+#### --plugin
+
+Print out missing plugins.  Caveat: to do this, `af` mocks part of
+[Alien::Build::Meta](https://metacpan.org/pod/Alien::Build::Meta), which may or may not break in the future.
 
 ## prop
 
