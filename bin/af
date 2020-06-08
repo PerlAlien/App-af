@@ -964,7 +964,7 @@ alienized package.
     my($self) = @_;
     
     my $table;
-    $table = Text::Table->new('name', 'alien version', 'package version')
+    $table = Text::Table->new('name', 'install type', 'alien version', 'package version')
       if $self->long;
     
     foreach my $inc (map { path($_)->absolute } @INC)
@@ -996,9 +996,10 @@ alienized package.
         }
         else
         {
+          my $install_type = eval { $class->install_type } // '---';
           my $perl_version = eval { $class->VERSION } // '---';
           my $pkg_version   = eval { $class->version } // '---';
-          $table->add($class, $perl_version, $pkg_version);
+          $table->add($class, $install_type, $perl_version, $pkg_version);
         }
       }
 

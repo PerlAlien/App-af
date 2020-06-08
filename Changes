@@ -1,6 +1,9 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  - `af list -l` or `af list --long` now displays the install type for each
+    Alien (gh#6)
+  - Moved project to the Perl5-Alien GitHub org.
 
 0.15      2017-09-28 15:58:25 -0400
   - Add af missing --plugin option
