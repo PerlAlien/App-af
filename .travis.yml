@@ -1,4 +1,4 @@
-language: minimal
+blanguage: minimal
 dist: xenial
 services:
   - docker
@@ -25,6 +25,10 @@ jobs:
     - env: CIP_TAG=5.18
     - env: CIP_TAG=5.16
     - env: CIP_TAG=5.14
+
+branches:
+  only:
+    - master
 
 cache:
   directories:
