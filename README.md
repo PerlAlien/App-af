@@ -1,4 +1,4 @@
-# af [![Build Status](https://travis-ci.org/plicease/App-af.svg)](http://travis-ci.org/plicease/App-af)
+# af [![Build Status](https://travis-ci.org/Perl5-Alien/App-af.svg)](http://travis-ci.org/Perl5-Alien/App-af)
 
 Command line tool for alienfile
 
