@@ -1,16 +1,18 @@
-# af [![Build Status](https://secure.travis-ci.org/plicease/App-af.png)](http://travis-ci.org/plicease/App-af)
+# af [![Build Status](https://travis-ci.org/plicease/App-af.svg)](http://travis-ci.org/plicease/App-af)
 
 Command line tool for alienfile
 
 # SYNOPSIS
 
-    af download   --help
-    af probe      --help
-    af install    --help
-    af requires   --help
-    af missing    --help
-    af prop       --help
-    af list       --help
+```
+af download   --help
+af probe      --help
+af install    --help
+af requires   --help
+af missing    --help
+af prop       --help
+af list       --help
+```
 
 # DESCRIPTION
 
@@ -35,9 +37,11 @@ Print the version of `af` and exit.
 
 ### Usage
 
-    af download
-      [ ( -f | --file )  alienfile | ( -c | --class ) class ]
-      [ ( -l | --local ) directory ]
+```
+af download
+  [ ( -f | --file )  alienfile | ( -c | --class ) class ]
+  [ ( -l | --local ) directory ]
+```
 
 ### description
 
@@ -67,11 +71,13 @@ if not specified.
 
 ### Usage
 
-    af probe
-      [ ( -f | --file ) alienfile | ( -c | --class ) class ]
-      [ --root directory ]
-      [ --before hook command ] [ --after hook command ]
-      [ -I lib ] [ --blib ]
+```
+af probe
+  [ ( -f | --file ) alienfile | ( -c | --class ) class ]
+  [ --root directory ]
+  [ --before hook command ] [ --after hook command ]
+  [ -I lib ] [ --blib ]
+```
 
 ### description
 
@@ -105,12 +111,14 @@ Use the blib from the current directory.
 
 ### Usage
 
-    af install
-      [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
-      [ --prefix directory | --dry-run ] [ --stage directory ]
-      [ --type ( share | system ) ] [ --root directory ] 
-      [ --before hook command ] [ --after hook command ]
-      [ -I lib ] [ --blib ]
+```
+af install
+  [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
+  [ --prefix directory | --dry-run ] [ --stage directory ]
+  [ --type ( share | system ) ] [ --root directory ] 
+  [ --before hook command ] [ --after hook command ]
+  [ -I lib ] [ --blib ]
+```
 
 ### description
 
@@ -160,7 +168,9 @@ hook my execute several times for a given recipe.  Example, to open up
 an interactive shell before the build has started, right after the 
 extraction:
 
-    % af install --before build bash
+```
+% af install --before build bash
+```
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the `state.json` file in the build root.
@@ -174,7 +184,9 @@ Execute the given command after the given hook.  Note that the same hook
 my execute several times for a given recipe.  Example, to open up an 
 interactive shell after the build has completed:
 
-    % af install --after build bash
+```
+% af install --after build bash
+```
 
 The build configuration is check pointed, so you can read the install 
 and runtime properties in the `state.json` file in the build root.
@@ -194,9 +206,11 @@ Use the blib from the current directory.
 
 ### Usage
 
-    af requires
-      [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
-      [ ( -p | --phase ) ( configure | any | share | system ) ]
+```
+af requires
+  [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
+  [ ( -p | --phase ) ( configure | any | share | system ) ]
+```
 
 ### description
 
@@ -226,10 +240,12 @@ for the meaning of the various phases.
 
 ### Usage
 
-    af missing
-      [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
-      [ ( -p | --phase ) ( configure | any | share | system ) ]
-      [ --plugin | --precompile ]
+```
+af missing
+  [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
+  [ ( -p | --phase ) ( configure | any | share | system ) ]
+  [ --plugin | --precompile ]
+```
 
 ### description
 
@@ -237,8 +253,10 @@ Print the requirements for the given phase in list format that are not
 currently fulfilled.  This output can be piped into [cpanm](https://metacpan.org/pod/cpanm) in order
 to install any missing requirements:
 
-    % af missing -p configure | cpanm
-    % af missing              | cpanm
+```
+% af missing -p configure | cpanm
+% af missing              | cpanm
+```
 
 If no phase is specified, then missing prereqs for configure, and either 
 share or system will be printed depending on what type of install is 
@@ -281,9 +299,11 @@ by this option.
 
 ### Usage
 
-    af prop 
-      ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] 
-      [ --modversion ] [ --bin-dir ]
+```
+af prop 
+  ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] 
+  [ --modversion ] [ --bin-dir ]
+```
 
 ### prop
 
@@ -323,7 +343,9 @@ Print the list of directories bundled with a `share` install.
 
 ### Usage
 
-    af list [ -l | --long ]
+```
+af list [ -l | --long ]
+```
 
 ### prop
 
