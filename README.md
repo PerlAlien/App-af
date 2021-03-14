@@ -1,4 +1,4 @@
-# af [![Build Status](https://travis-ci.org/PerlAlien/App-af.svg)](http://travis-ci.org/PerlAlien/App-af)
+# af ![linux](https://github.com/PerlAlien/App-af/workflows/linux/badge.svg)
 
 Command line tool for alienfile
 
