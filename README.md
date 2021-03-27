@@ -1,4 +1,4 @@
-# af ![linux](https://github.com/PerlAlien/App-af/workflows/linux/badge.svg)
+# af ![linux](https://github.com/PerlAlien/App-af/workflows/linux/badge.svg) ![macos](https://github.com/PerlAlien/App-af/workflows/macos/badge.svg) ![windows](https://github.com/PerlAlien/App-af/workflows/windows/badge.svg) ![cygwin](https://github.com/PerlAlien/App-af/workflows/cygwin/badge.svg) ![msys2-mingw](https://github.com/PerlAlien/App-af/workflows/msys2-mingw/badge.svg)
 
 Command line tool for alienfile
 
