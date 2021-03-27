@@ -23,7 +23,6 @@ $modules{$_} = $_ for qw(
   Test2::Mock
   Test2::Tools::Basic
   Test2::V0
-  Test::Exit
   Test::Script
   Text::Table
   YAML
