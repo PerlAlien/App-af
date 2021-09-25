@@ -13,8 +13,8 @@ use File::chdir;
 
 =head1 SYNOPSIS
 
- af download   --help
  af probe      --help
+ af download   --help
  af install    --help
  af requires   --help
  af missing    --help
