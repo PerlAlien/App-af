@@ -18,15 +18,11 @@ subtest 'basic' => sub {
   alienfile q{
     use alienfile;
     use Path::Tiny qw( path );
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
     share {
-      download sub {
-        path('foo-1.00.tar.gz')->touch;
-      };
-      extract sub {
-        path('file1')->touch;
-        path('file2')->touch;
-      };
       build sub {
         my($build) = @_;
         path($build->install_prop->{prefix})->child('file1')->touchpath;
@@ -53,15 +49,11 @@ subtest '--dry-run' => sub {
   alienfile q{
     use alienfile;
     use Path::Tiny qw( path );
-    probe sub { 'share' };
+    plugin 'Test::Mock',
+      probe    => 'share',
+      download => 1,
+      extract  => 1;
     share {
-      download sub {
-        path('foo-1.00.tar.gz')->touch;
-      };
-      extract sub {
-        path('file1')->touch;
-        path('file2')->touch;
-      };
       build sub {
         my($build) = @_;
         path($build->install_prop->{prefix})->child('file1')->touchpath;
