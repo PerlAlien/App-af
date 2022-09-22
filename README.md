@@ -5,8 +5,8 @@ Command line tool for alienfile
 # SYNOPSIS
 
 ```
-af download   --help
 af probe      --help
+af download   --help
 af install    --help
 af requires   --help
 af missing    --help
@@ -369,7 +369,7 @@ Diab Jerius (DJERIUS)
 
 # COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2017 by Graham Ollis.
+This software is copyright (c) 2017-2022 by Graham Ollis.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
