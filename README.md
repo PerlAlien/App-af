@@ -1,4 +1,4 @@
-# af ![linux](https://github.com/PerlAlien/App-af/workflows/linux/badge.svg) ![macos](https://github.com/PerlAlien/App-af/workflows/macos/badge.svg) ![windows](https://github.com/PerlAlien/App-af/workflows/windows/badge.svg) ![cygwin](https://github.com/PerlAlien/App-af/workflows/cygwin/badge.svg) ![msys2-mingw](https://github.com/PerlAlien/App-af/workflows/msys2-mingw/badge.svg)
+# af ![static](https://github.com/PerlAlien/App-af/workflows/static/badge.svg) ![linux](https://github.com/PerlAlien/App-af/workflows/linux/badge.svg) ![macos](https://github.com/PerlAlien/App-af/workflows/macos/badge.svg) ![windows](https://github.com/PerlAlien/App-af/workflows/windows/badge.svg) ![cygwin](https://github.com/PerlAlien/App-af/workflows/cygwin/badge.svg) ![msys2-mingw](https://github.com/PerlAlien/App-af/workflows/msys2-mingw/badge.svg)
 
 Command line tool for alienfile
 
@@ -53,14 +53,14 @@ option, or the current working directory if not specified.
 
 #### -f | --file
 
-The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then
 `alienfile` in the current directory will be assumed.
 
 #### -c | --class
 
 Get the [alienfile](https://metacpan.org/pod/alienfile) from the already installed Alien module.    You may
 omit the `Alien::` prefix, so for example [Alien::curl](https://metacpan.org/pod/Alien::curl) may be specified
-as simply `curl`.  
+as simply `curl`.
 
 #### -l | --local
 
@@ -85,7 +85,7 @@ Probe system for existing library or tool using the given [alienfile](https://me
 
 #### -f | --file
 
-The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then
 `alienfile` in the current directory will be assumed.
 
 #### -c | --class
@@ -115,7 +115,7 @@ Use the blib from the current directory.
 af install
   [ ( -f | --file )  alienfile |  ( -c | --class ) class ]
   [ --prefix directory | --dry-run ] [ --stage directory ]
-  [ --type ( share | system ) ] [ --root directory ] 
+  [ --type ( share | system ) ] [ --root directory ]
   [ --before hook command ] [ --after hook command ]
   [ -I lib ] [ --blib ]
 ```
@@ -129,7 +129,7 @@ Install or reinstall using the given [alienfile](https://metacpan.org/pod/alienf
 
 #### -f | --file
 
-The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then
 `alienfile` in the current directory will be assumed.
 
 #### -c | --class
@@ -163,16 +163,16 @@ Build in root
 
 #### --before
 
-Execute the given command before the given hook.  Note that the same 
-hook my execute several times for a given recipe.  Example, to open up 
-an interactive shell before the build has started, right after the 
+Execute the given command before the given hook.  Note that the same
+hook my execute several times for a given recipe.  Example, to open up
+an interactive shell before the build has started, right after the
 extraction:
 
 ```
 % af install --before build bash
 ```
 
-The build configuration is check pointed, so you can read the install 
+The build configuration is check pointed, so you can read the install
 and runtime properties in the `state.json` file in the build root.
 Use \* or % as the hook to run the command before all hooks.  You can
 use `:repl` as the command to open up a Perl REPL (Read-Eval-Print-Loop)
@@ -180,15 +180,15 @@ to inspect the `$build` and `$meta` objects.
 
 #### --after
 
-Execute the given command after the given hook.  Note that the same hook 
-my execute several times for a given recipe.  Example, to open up an 
+Execute the given command after the given hook.  Note that the same hook
+my execute several times for a given recipe.  Example, to open up an
 interactive shell after the build has completed:
 
 ```
 % af install --after build bash
 ```
 
-The build configuration is check pointed, so you can read the install 
+The build configuration is check pointed, so you can read the install
 and runtime properties in the `state.json` file in the build root.
 Use \* or % as the hook to run the command before all hooks.  You can
 use `:repl` as the command to open up a Perl REPL (Read-Eval-Print-Loop)
@@ -222,7 +222,7 @@ in [YAML](https://metacpan.org/pod/YAML) format.
 
 #### -f | --file
 
-The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then
 `alienfile` in the current directory will be assumed.
 
 #### -c | --class
@@ -258,16 +258,16 @@ to install any missing requirements:
 % af missing              | cpanm
 ```
 
-If no phase is specified, then missing prereqs for configure, and either 
-share or system will be printed depending on what type of install is 
-detected (for this to work you may need to install the configure 
+If no phase is specified, then missing prereqs for configure, and either
+share or system will be printed depending on what type of install is
+detected (for this to work you may need to install the configure
 prereqs, since the probe may use configure required modules).
 
 ### options
 
 #### -f | --file
 
-The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then 
+The [alienfile](https://metacpan.org/pod/alienfile).  If neither this option, nor `-c` is specified, then
 `alienfile` in the current directory will be assumed.
 
 #### -c | --class
@@ -278,7 +278,7 @@ as simply `curl`.
 
 #### -p | --phase
 
-The phase of the requirement.  Please refer to the [Alien::Build](https://metacpan.org/pod/Alien::Build) 
+The phase of the requirement.  Please refer to the [Alien::Build](https://metacpan.org/pod/Alien::Build)
 documentation for the meaning of the various phases.
 
 #### --plugin
@@ -300,8 +300,8 @@ by this option.
 ### Usage
 
 ```
-af prop 
-  ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ] 
+af prop
+  ( -c | --class ) class [ --cflags ] [ --libs ] [ --static ]
   [ --modversion ] [ --bin-dir ]
 ```
 

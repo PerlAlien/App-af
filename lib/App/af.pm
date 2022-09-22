@@ -34,10 +34,10 @@ L<af>
   sub BUILDARGS
   {
     my($class, @args) = @_;
-    
+
     my($subcommand) = $class =~ /App::af::(.*)/;
     my %args = ( args => \@args );
-    
+
     my @options = (
       'help'    => sub {
         pod2usage({
@@ -50,7 +50,7 @@ L<af>
         exit;
       },
     );
-    
+
     foreach my $attr ($class->meta->get_all_attributes)
     {
       next unless $attr->does("App::af::opt");
@@ -69,14 +69,14 @@ L<af>
         push @options, $name => \$args{$attr->name};
       }
     }
-    
+
     GetOptionsFromArray(\@args, @options)
       || pod2usage({
-           -exitval => 1, 
-           -verbose => 99, 
+           -exitval => 1,
+           -verbose => 99,
            -sections => $subcommand eq 'default' ? 'SYNOPSIS' : "SUBCOMMANDS/$subcommand/Usage",
          });
-    
+
     delete $args{$_} for grep { ! defined $args{$_} } keys %args;
 
     \%args,
@@ -88,8 +88,8 @@ L<af>
       ? 'App::af::' . shift @ARGV
       : 'App::af::default';
   }
-  
-  requires 'main';  
+
+  requires 'main';
 }
 
 package App::af::default {
@@ -114,7 +114,7 @@ package App::af::role::alienfile {
   use MooseX::Types::Path::Tiny qw( AbsPath );
   use Path::Tiny qw( path );
   use File::Temp qw( tempdir );
-  
+
   has file => (
     is       => 'ro',
     isa      => AbsPath,
@@ -124,7 +124,7 @@ package App::af::role::alienfile {
     default  => 'alienfile',
     coerce   => 1,
   );
-  
+
   has class => (
     is       => 'ro',
     isa      => 'Str',
@@ -132,17 +132,17 @@ package App::af::role::alienfile {
     short    => 'c',
     opt_type => 's',
   );
-  
+
   sub build
   {
     my($self, %args) = @_;
-    
+
     my $alienfile;
-    
+
     my $prefix;
-    
+
     $args{root} ||= tempdir( CLEANUP => 1);
-    
+
     if($self->class)
     {
       my $class = $self->class =~ /::/ ? $self->class : "Alien::" . $self->class;
@@ -173,7 +173,7 @@ package App::af::role::alienfile {
       say STDERR "unable to read $alienfile";
       exit 2;
     }
-    
+
     if(my $patch = $alienfile->parent->child('patch'))
     {
       if(-d $patch)
@@ -181,20 +181,20 @@ package App::af::role::alienfile {
         $args{patch} = "$patch";
       }
     }
-  
+
     require Alien::Build;
     my $build = Alien::Build->load("$alienfile", %args);
-    
-    wantarray ? ($build, $prefix) : $build;
 
-  }  
+    wantarray ? ($build, $prefix) : $build;  ## no critic (Community::Wantarray)
+
+  }
 }
 
 package App::af::role::phase {
 
   use Moose::Role;
   use namespace::autoclean;
-  
+
   has phase => (
     is       => 'ro',
     isa      => 'Str',
@@ -203,18 +203,18 @@ package App::af::role::phase {
     opt_type => 's',
     short    => 'p',
   );
-  
+
   sub check_phase
   {
     my($self) = @_;
-    
+
     if($self->phase !~ /^(configure|any|all|share|system)$/)
     {
       say STDERR "unknown phase: @{[ $self->phase ]}";
       exit 2;
     }
   }
-  
+
 }
 
 package App::af::role::libandblib {
@@ -230,13 +230,13 @@ package App::af::role::libandblib {
     opt_type => 's',
     is_array => 1,
   );
-  
+
   has blib => (
     is       => 'ro',
     isa      => 'Int',
     traits   => ['App::af::opt'],
   );
-  
+
   around main => sub {
     my $orig = shift;
     my $self = shift;
@@ -249,7 +249,7 @@ package App::af::role::libandblib {
       require lib;
       lib->import($inc);
     }
-    
+
     if($self->blib)
     {
       require blib;
@@ -259,9 +259,9 @@ package App::af::role::libandblib {
     # make sure @INC entries are absolute, since $build
     # may do a lot of directory changes
     @INC = map { ref $_ ? $_ : path($_)->absolute->stringify } @INC;
-    
+
     $orig->($self, @args);
-    
+
   };
 
 }
@@ -270,19 +270,19 @@ package App::af::opt {
 
   use Moose::Role;
   use namespace::autoclean;
-  
+
   has short => (
     is      => 'rw',
     isa     => 'Str',
     default => '',
   );
-  
+
   has opt_type => (
     is      => 'rw',
     isa     => 'Str',
     default => '',
   );
-  
+
   has is_array => (
     is      => 'rw',
     isa     => 'Int',

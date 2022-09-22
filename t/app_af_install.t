@@ -12,9 +12,9 @@ delete $ENV{ALIEN_INSTALL_TYPE};
 subtest 'basic' => sub {
 
   local $CWD = tempdir( CLEANUP => 1 );
-  
+
   my $prefix = path('test-prefix')->absolute;
-  
+
   alienfile q{
     use alienfile;
     use Path::Tiny qw( path );
@@ -30,11 +30,11 @@ subtest 'basic' => sub {
       };
     };
   };
-  
+
   run 'install', "--prefix=$prefix";
-  
+
   is last_exit, 0;
-  
+
   ok( -f $prefix->child('file1') );
   ok( -f $prefix->child('file1') );
 
@@ -43,9 +43,9 @@ subtest 'basic' => sub {
 subtest '--dry-run' => sub {
 
   local $CWD = tempdir( CLEANUP => 1 );
-  
+
   my $stage = path('test-stage')->absolute;
-  
+
   alienfile q{
     use alienfile;
     use Path::Tiny qw( path );
@@ -61,11 +61,11 @@ subtest '--dry-run' => sub {
       };
     };
   };
-  
+
   run 'install', "--dry-run", "--stage=$stage";
-  
+
   is last_exit, 0;
-  
+
   note "stage = $stage";
   ok( -f $stage->child('file1') );
   ok( -f $stage->child('file1') );
